@@ -1,9 +1,10 @@
 // StudentHome.js
+import "./TeacherHome.css"
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 
 const TeacherHome = ({ userInfo }) => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const handleLogout = () => {
     // Clear the authentication token from local storage or perform any other necessary logout logic

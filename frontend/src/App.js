@@ -1,5 +1,6 @@
-// App.js
-import React, { useState } from 'react';
+
+import './App.css'
+import React, { useState,useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
 import Signup from './Signup';
 import Login from './Login';
@@ -10,6 +11,16 @@ const App = () => {
   const [userRole, setUserRole] = useState(null);
   const [userInfo, setUserInfo] = useState({});
   const [authenticated, setAuthenticated] = useState(false);
+  useEffect(() => {
+    // Check if user information is stored in localStorage
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      const { role } = JSON.parse(storedUser);
+      setUserRole(role);
+      setAuthenticated(true);
+    }
+  }, []);
+  
 
   const handleLogin = (role, user) => {
     setUserRole(role);
@@ -21,59 +32,35 @@ const App = () => {
     <Router>
       <div>
         <nav>
-          {/* Navigation links */}
           <ul>
-            <li>
-              <Link to="/signup">Signup</Link>
-            </li>
-            <li>
-              <Link to="/login">Login</Link>
-            </li>
-            {/* <li>
-              <Link to="/TeacherHome">Teacher Home</Link>
-            </li>
-            <li>
-              <Link to="/StudentHome">Student Home</Link>
-            </li> */}
+            <li><Link to="/signup">Signup</Link></li>
+            <li><Link to="/login">Login</Link></li>
+            {/* {authenticated && (
+              <>
+                <li><Link to="/TeacherHome">Teacher Home</Link></li>
+                <li><Link to="/StudentHome">Student Home</Link></li>
+              </>
+            )} */}
           </ul>
         </nav>
 
         <hr />
 
         <Routes>
+          <Route path="/signup" element={<Signup onLogin={handleLogin} />} />
+          <Route path="/login" element={<Login onLogin={handleLogin} />} />
+
+          {authenticated && (
+            <>
+              <Route path="/TeacherHome" element={<TeacherHome userInfo={userInfo} />} />
+              <Route path="/StudentHome" element={<StudentHome userInfo={userInfo} />} />
+            </>
+          )}
+
           <Route
-            path="/signup"
-            element={
-              authenticated ? <Navigate to={`/${userRole}Home`} /> : <Signup onLogin={handleLogin} />
-            }
+            path="/"
+            element={<Navigate to="/login" />} // Redirect to login if no matching route is found
           />
-          <Route
-            path="/login"
-            element={
-              authenticated ? <Navigate to={`/${userRole}Home`} /> : <Login onLogin={handleLogin} />
-            }
-          />
-          <Route
-            path="/TeacherHome"
-            element={
-              authenticated && userRole === 'teacher' ? (
-                <TeacherHome userInfo={userInfo} />
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
-          <Route
-            path="/StudentHome"
-            element={
-              authenticated && userRole === 'student' ? (
-                <StudentHome userInfo={userInfo} />
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
-          <Route path="/" element={<Navigate to="/login" />} />
         </Routes>
       </div>
     </Router>
