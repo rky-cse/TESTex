@@ -8,7 +8,7 @@ const Login = ({ onLogin }) => {
     password: '',
   });
 
-  // Get the navigate function from the hook
+  const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
   const handleInputChange = (e) => {
@@ -16,43 +16,24 @@ const Login = ({ onLogin }) => {
       ...formData,
       [e.target.name]: e.target.value,
     });
+    setErrorMessage('');
   };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   try {
-  //     const response = await axios.post('http://localhost:5000/login', formData);
-  //     console.log('Login successful');
-  //     console.log(response.data.user.role);
-  //     const userRole = response.data.user.role;
-
-  //     // Update the user role using the onLogin prop
-  //     onLogin(userRole);
-
-  //     // Use navigate to redirect to the respective home page
-  //     if (userRole === 'teacher') {
-  //       navigate('/TeacherHome');
-  //     } else if (userRole === 'student') {
-  //       navigate('/StudentHome');
-  //     }
-  //   } catch (error) {
-  //     console.error('Login failed:', error.message);
-  //   }
-  // };
-  
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
-      const response = await axios.post('http://localhost:5000/login', formData);
+      const response = await axios.post('http://localhost:5000/login', formData, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
       console.log('Login successful');
       const { role, username } = response.data.user;
-
-      // Update the user information using the onLogin prop
+  
       onLogin(role, { username });
-
-      // Use navigate to redirect to the respective home page
+  
       if (role === 'teacher') {
         navigate('/TeacherHome');
       } else if (role === 'student') {
@@ -60,8 +41,15 @@ const Login = ({ onLogin }) => {
       }
     } catch (error) {
       console.error('Login failed:', error.message);
+  
+      if (error.response && error.response.status === 401) {
+        setErrorMessage('Invalid credentials. Please try again.');
+      } else {
+        setErrorMessage('Error during login. Please try again.');
+      }
     }
   };
+  
 
   return (
     <div>
@@ -79,6 +67,8 @@ const Login = ({ onLogin }) => {
         <br />
         <button type="submit">Login</button>
       </form>
+
+      {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
     </div>
   );
 };
