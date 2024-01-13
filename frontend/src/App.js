@@ -11,15 +11,18 @@ const App = () => {
   const [userRole, setUserRole] = useState(null);
   const [userInfo, setUserInfo] = useState({});
   const [authenticated, setAuthenticated] = useState(false);
+
   useEffect(() => {
     // Check if user information is stored in localStorage
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
-      const { role } = JSON.parse(storedUser);
+      const { role, username } = JSON.parse(storedUser);
       setUserRole(role);
+      setUserInfo({ username }); // Set the user information
       setAuthenticated(true);
     }
   }, []);
+  
   
 
   const handleLogin = (role, user) => {
@@ -35,12 +38,12 @@ const App = () => {
           <ul>
             <li><Link to="/signup">Signup</Link></li>
             <li><Link to="/login">Login</Link></li>
-            {/* {authenticated && (
+            {authenticated && (
               <>
                 <li><Link to="/TeacherHome">Teacher Home</Link></li>
                 <li><Link to="/StudentHome">Student Home</Link></li>
               </>
-            )} */}
+            )}
           </ul>
         </nav>
 
