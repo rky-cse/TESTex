@@ -38,12 +38,12 @@ const App = () => {
           <ul>
             <li><Link to="/signup">Signup</Link></li>
             <li><Link to="/login">Login</Link></li>
-            {authenticated && (
+            {/* {authenticated && (
               <>
                 <li><Link to="/TeacherHome">Teacher Home</Link></li>
                 <li><Link to="/StudentHome">Student Home</Link></li>
               </>
-            )}
+            )} */}
           </ul>
         </nav>
 
