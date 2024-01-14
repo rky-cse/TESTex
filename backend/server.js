@@ -3,9 +3,10 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-
+const fs = require('fs').promises;
+const path = require('path'); // Added to handle path more reliably
+let questions = require('./data');
 const app = express();
 const port = 5000;
 const secretKey = 'yourSecretKey'; // Replace with a strong secret key
@@ -18,7 +19,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/OMTMuserDB', { useNewUrlParser: true
     console.log(`Connected to the database`);
   })
   .catch((e) => {
-    console.log(`Couldn't connect to the database`);
+    console.error(`Couldn't connect to the database`, e); // Log the error
   });
 
 const userSchema = new mongoose.Schema({
@@ -32,20 +33,16 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
-// Signup route
 app.post('/signup', async (req, res) => {
   const { username, password, role } = req.body;
 
   try {
-    // Check if the username already exists
     const existingUser = await User.findOne({ username });
 
     if (existingUser) {
-      // If the username already exists, return an error response
       return res.status(400).json({ message: 'Username already exists' });
     }
 
-    // If the username is unique, create a new user with hashed password
     const hashedPassword = bcrypt.hashSync(password, 10);
     const newUser = new User({ username, password: hashedPassword, role });
     await newUser.save();
@@ -57,10 +54,6 @@ app.post('/signup', async (req, res) => {
   }
 });
 
-
-
-
-// Login route
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
@@ -70,10 +63,8 @@ app.post('/login', async (req, res) => {
     console.log('User from database:', user);
 
     if (user && bcrypt.compareSync(password, user.password)) {
-      // Passwords match, user is authenticated
       res.status(200).json({ message: 'Login successful', user });
     } else {
-      // Invalid credentials
       res.status(401).json({ message: 'Invalid credentials' });
     }
   } catch (error) {
@@ -84,9 +75,40 @@ app.post('/login', async (req, res) => {
 
 
 
+app.post('/api/saveFormData', async (req, res) => {
+  try {
+    const formData = req.body;
+
+    // Push the new question to the existing questions array
+    questions.push(formData);
+
+    // Generate the JavaScript code to update data.js
+    const updateCode = `module.exports = ${JSON.stringify(questions, null, 2)};\n`;
+
+    // Write the update code to data.js
+    await fs.writeFile(path.join(__dirname, 'data.js'), updateCode);
+
+    res.status(200).json({ success: true, message: 'Form data saved successfully' });
+  } catch (error) {
+    console.error('Error saving form data:', error);
+    res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
+  }
+});
+
+
+
+app.get('/api/getQuestions', (req, res) => {
+  try {
+    res.json({ success: true, questions: questions });
+  } catch (error) {
+    console.error('Error fetching questions:', error);
+    res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
+  }
+});
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+
 
 
 

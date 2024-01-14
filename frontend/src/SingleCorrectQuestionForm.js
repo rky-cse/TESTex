@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { TextField, Button, Radio, RadioGroup, FormControlLabel, IconButton } from '@mui/material';
 import { Delete } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 const SingleCorrectQuestionForm = ({ onSave }) => {
   const [question, setQuestion] = useState('');
@@ -9,6 +10,8 @@ const SingleCorrectQuestionForm = ({ onSave }) => {
   const [options, setOptions] = useState([{ text: '', isCorrect: false, image: null }]);
   const [positiveMarks, setPositiveMarks] = useState(1);
   const [negativeMarks, setNegativeMarks] = useState(0);
+
+  const navigate=useNavigate();
 
   const handleAddOption = () => {
     setOptions([...options, { text: '', isCorrect: false, image: null }]);
@@ -37,19 +40,38 @@ const SingleCorrectQuestionForm = ({ onSave }) => {
     setOptions(updatedOptions);
   };
 
-  const handleSave = () => {
-    // Create an object with all the input data
+ 
+  const handleSave = async () => {
     const formData = {
       question,
       questionImage,
       options,
       positiveMarks,
       negativeMarks,
+      questionType: 'singleCorrect',
     };
 
-    // Call the onSave prop with the form data
-    onSave && onSave(formData);
-    console.log(formData);
+    try {
+      const response = await fetch('http://localhost:5000/api/saveFormData', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        onSave && onSave(formData);
+        console.log(formData);
+      } else {
+        console.error('Failed to save form data:', result.message);
+      }
+      navigate("/questions");
+    } catch (error) {
+      console.error('Error sending form data:', error);
+    }
   };
 
   return (
@@ -126,4 +148,3 @@ const SingleCorrectQuestionForm = ({ onSave }) => {
 };
 
 export default SingleCorrectQuestionForm;
-
