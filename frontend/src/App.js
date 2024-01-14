@@ -6,6 +6,8 @@ import Signup from './Signup';
 import Login from './Login';
 import TeacherHome from './TeacherHome';
 import StudentHome from './StudentHome';
+import CreateMockTest from './CreateMockTest'; // Import the CreateMockTest component
+
 
 const App = () => {
   const [userRole, setUserRole] = useState(null);
@@ -53,12 +55,21 @@ const App = () => {
           <Route path="/signup" element={<Signup onLogin={handleLogin} />} />
           <Route path="/login" element={<Login onLogin={handleLogin} />} />
 
-          {authenticated && (
+          {/* {authenticated && (
             <>
               <Route path="/TeacherHome" element={<TeacherHome userInfo={userInfo} />} />
               <Route path="/StudentHome" element={<StudentHome userInfo={userInfo} />} />
             </>
-          )}
+          )} */}
+          {authenticated && (
+            <>
+              <Route path="/TeacherHome" element={<TeacherHome userInfo={userInfo} />} />
+              <Route path="/StudentHome" element={<StudentHome userInfo={userInfo} />} />
+
+              {/* Add the following route for CreateMockTest */}
+              <Route path="/CreateMockTest" element={<CreateMockTest />} />
+            </>
+           )}
 
           <Route
             path="/"

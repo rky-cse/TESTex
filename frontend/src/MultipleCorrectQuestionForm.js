@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { TextField, Button, Radio, RadioGroup, FormControlLabel, IconButton } from '@mui/material';
+import { TextField, Button, Checkbox, FormControlLabel, IconButton } from '@mui/material';
 import { Delete } from '@mui/icons-material';
 
-const SingleCorrectQuestionForm = () => {
+const MultipleCorrectQuestionForm = () => {
   const [question, setQuestion] = useState('');
   const [questionImage, setQuestionImage] = useState(null);
   const [options, setOptions] = useState([{ text: '', isCorrect: false, image: null }]);
@@ -26,19 +26,13 @@ const SingleCorrectQuestionForm = () => {
 
   const handleOptionChange = (index, key, value) => {
     const updatedOptions = [...options];
-
-    // If the selected option is correct, unselect all other options
-    if (key === 'isCorrect' && value) {
-      updatedOptions.forEach((opt, i) => (i !== index ? (opt.isCorrect = false) : null));
-    }
-
     updatedOptions[index][key] = value;
     setOptions(updatedOptions);
   };
 
   return (
     <div>
-      <h3>Single Correct Question</h3>
+      <h3>Multiple Correct Question</h3>
 
       {/* Question Input */}
       <TextField
@@ -60,13 +54,15 @@ const SingleCorrectQuestionForm = () => {
             placeholder={`Option ${index + 1}`}
           />
 
-          <RadioGroup>
-            <FormControlLabel
-              value="correct"
-              control={<Radio checked={option.isCorrect} onChange={(e) => handleOptionChange(index, 'isCorrect', e.target.checked)} />}
-              label="Correct"
-            />
-          </RadioGroup>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={option.isCorrect}
+                onChange={(e) => handleOptionChange(index, 'isCorrect', e.target.checked)}
+              />
+            }
+            label="Correct"
+          />
 
           <input
             type="file"
@@ -104,4 +100,4 @@ const SingleCorrectQuestionForm = () => {
   );
 };
 
-export default SingleCorrectQuestionForm;
+export default MultipleCorrectQuestionForm;
