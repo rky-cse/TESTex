@@ -1,8 +1,10 @@
+
+
 import React, { useState } from 'react';
 import { TextField, Button, Checkbox, FormControlLabel, IconButton } from '@mui/material';
 import { Delete } from '@mui/icons-material';
 
-const MultipleCorrectQuestionForm = () => {
+const MultipleCorrectQuestionForm = ({ onSave }) => {
   const [question, setQuestion] = useState('');
   const [questionImage, setQuestionImage] = useState(null);
   const [options, setOptions] = useState([{ text: '', isCorrect: false, image: null }]);
@@ -28,6 +30,21 @@ const MultipleCorrectQuestionForm = () => {
     const updatedOptions = [...options];
     updatedOptions[index][key] = value;
     setOptions(updatedOptions);
+  };
+
+  const handleSave = () => {
+    // Create an object with all the input data
+    const formData = {
+      question,
+      questionImage,
+      options,
+      positiveMarks,
+      negativeMarks,
+    };
+
+    // Call the onSave prop with the form data
+    onSave && onSave(formData);
+    console.log(formData);
   };
 
   return (
@@ -96,8 +113,14 @@ const MultipleCorrectQuestionForm = () => {
         onChange={(e) => setNegativeMarks(e.target.value)}
         label="Negative Marks"
       />
+
+      {/* Save Button */}
+      <Button variant="contained" color="primary" onClick={handleSave}>
+        Save
+      </Button>
     </div>
   );
 };
 
 export default MultipleCorrectQuestionForm;
+

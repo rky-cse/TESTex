@@ -1,8 +1,10 @@
+
+
 import React, { useState } from 'react';
 import { TextField, Button, IconButton } from '@mui/material';
 import { Delete } from '@mui/icons-material';
 
-const DecimalTypeQuestionForm = () => {
+const DecimalTypeQuestionForm = ({ onSave }) => {
   const [question, setQuestion] = useState('');
   const [questionImage, setQuestionImage] = useState(null);
   const [answerMin, setAnswerMin] = useState('');
@@ -13,6 +15,22 @@ const DecimalTypeQuestionForm = () => {
   const handleQuestionImageChange = (e) => {
     const file = e.target.files[0];
     setQuestionImage(file);
+  };
+
+  const handleSave = () => {
+    // Create an object with all the input data
+    const formData = {
+      question,
+      questionImage,
+      answerMin,
+      answerMax,
+      positiveMarks,
+      negativeMarks,
+    };
+
+    // Call the onSave prop with the form data
+    onSave && onSave(formData);
+    console.log(formData);
   };
 
   return (
@@ -60,10 +78,10 @@ const DecimalTypeQuestionForm = () => {
         label="Negative Marks"
       />
 
-      {/* Delete Question Icon */}
-      <IconButton>
-        <Delete />
-      </IconButton>
+      {/* Save Button */}
+      <Button variant="contained" color="primary" onClick={handleSave}>
+        Save
+      </Button>
     </div>
   );
 };

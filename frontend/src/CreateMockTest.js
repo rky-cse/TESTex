@@ -1,5 +1,8 @@
+
 import React, { useState } from 'react';
 import AddQuestion from './AddQuestionPage';
+import { IconButton } from '@mui/material';
+import { Delete } from '@mui/icons-material';
 
 const CreateMockTest = () => {
   const [testName, setTestName] = useState('');
@@ -10,6 +13,12 @@ const CreateMockTest = () => {
     // Logic to add a new question to the array
     const newQuestion = { /* your question object structure */ };
     setQuestions([...questions, newQuestion]);
+  };
+
+  const handleDeleteQuestion = (index) => {
+    const updatedQuestions = [...questions];
+    updatedQuestions.splice(index, 1);
+    setQuestions(updatedQuestions);
   };
 
   return (
@@ -41,6 +50,11 @@ const CreateMockTest = () => {
         <div key={index}>
           {/* Render each question using the AddQuestion component */}
           <AddQuestion question={question} />
+
+          {/* Delete Question Icon */}
+          <IconButton onClick={() => handleDeleteQuestion(index)}>
+            <Delete />
+          </IconButton>
         </div>
       ))}
 
