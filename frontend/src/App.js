@@ -18,7 +18,7 @@ const App = () => {
   const [authenticated, setAuthenticated] = useState(false);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
+ const storedUser = localStorage.getItem('user');
     if (storedUser) {
       const { role, username } = JSON.parse(storedUser);
       setUserRole(role);

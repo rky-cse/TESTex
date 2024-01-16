@@ -19,44 +19,6 @@ module.exports = [
     "questionType": "singleCorrect"
   },
   {
-    "question": "1+1",
-    "questionImage": null,
-    "options": [
-      {
-        "text": "2",
-        "isCorrect": true,
-        "image": null
-      },
-      {
-        "text": "3",
-        "isCorrect": false,
-        "image": null
-      }
-    ],
-    "positiveMarks": 1,
-    "negativeMarks": 0,
-    "questionType": "singleCorrect"
-  },
-  {
-    "question": "1+1",
-    "questionImage": null,
-    "options": [
-      {
-        "text": "2",
-        "isCorrect": true,
-        "image": null
-      },
-      {
-        "text": "3",
-        "isCorrect": false,
-        "image": null
-      }
-    ],
-    "positiveMarks": 1,
-    "negativeMarks": 0,
-    "questionType": "singleCorrect"
-  },
-  {
     "question": "asdf",
     "questionImage": null,
     "options": [
@@ -315,6 +277,51 @@ module.exports = [
     "options": [
       {
         "text": "",
+        "isCorrect": false,
+        "image": null
+      }
+    ],
+    "positiveMarks": 1,
+    "negativeMarks": 0,
+    "questionType": "singleCorrect"
+  },
+  {
+    "question": "mmmmm",
+    "questionImage": null,
+    "answer": "99",
+    "positiveMarks": 1,
+    "negativeMarks": 0,
+    "questionType": "integerType"
+  },
+  {
+    "question": "000009",
+    "questionImage": null,
+    "answer": "09",
+    "positiveMarks": 1,
+    "negativeMarks": 0,
+    "questionType": "integerType"
+  },
+  {
+    "question": "what is your name",
+    "questionImage": null,
+    "options": [
+      {
+        "text": "ravi",
+        "isCorrect": true,
+        "image": null
+      },
+      {
+        "text": "aryan",
+        "isCorrect": false,
+        "image": null
+      },
+      {
+        "text": "rajan",
+        "isCorrect": false,
+        "image": null
+      },
+      {
+        "text": "uday",
         "isCorrect": false,
         "image": null
       }

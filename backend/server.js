@@ -10,6 +10,7 @@ let questions = require('./data');
 const app = express();
 const port = 5000;
 const secretKey = 'yourSecretKey'; // Replace with a strong secret key
+const Quiz = require('./Quiz');
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -75,18 +76,17 @@ app.post('/login', async (req, res) => {
 
 
 
+
+
 app.post('/api/saveFormData', async (req, res) => {
   try {
     const formData = req.body;
 
-    // Push the new question to the existing questions array
-    questions.push(formData);
+    // Create a new quiz question using the Mongoose model
+    const newQuestion = new Quiz(formData);
 
-    // Generate the JavaScript code to update data.js
-    const updateCode = `module.exports = ${JSON.stringify(questions, null, 2)};\n`;
-
-    // Write the update code to data.js
-    await fs.writeFile(path.join(__dirname, 'data.js'), updateCode);
+    // Save the new question to the database
+    await newQuestion.save();
 
     res.status(200).json({ success: true, message: 'Form data saved successfully' });
   } catch (error) {
@@ -95,21 +95,37 @@ app.post('/api/saveFormData', async (req, res) => {
   }
 });
 
-
-
-app.get('/api/getQuestions', (req, res) => {
+app.get('/api/getQuestions', async (req, res) => {
   try {
+    // Fetch all quiz questions from the database
+    const questions = await Quiz.find();
     res.json({ success: true, questions: questions });
   } catch (error) {
     console.error('Error fetching questions:', error);
     res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
   }
 });
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+app.delete('/api/deleteQuestion/:id', async (req, res) => {
+  try {
+    const questionId = req.params.id;
+
+    // Find the question by ID and delete it
+    const deletedQuestion = await Quiz.findByIdAndDelete(questionId);
+
+    if (deletedQuestion) {
+      res.status(200).json({ success: true, message: 'Question deleted successfully' });
+    } else {
+      res.status(404).json({ success: false, message: 'Question not found' });
+    }
+  } catch (error) {
+    console.error('Error deleting question:', error);
+    res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
+  }
 });
 
 
 
-
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
 
