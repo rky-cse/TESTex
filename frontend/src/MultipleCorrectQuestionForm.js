@@ -1,8 +1,8 @@
 
-
 import React, { useState } from 'react';
 import { TextField, Button, Checkbox, FormControlLabel, IconButton } from '@mui/material';
 import { Delete } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 const MultipleCorrectQuestionForm = ({ onSave }) => {
   const [question, setQuestion] = useState('');
@@ -10,6 +10,7 @@ const MultipleCorrectQuestionForm = ({ onSave }) => {
   const [options, setOptions] = useState([{ text: '', isCorrect: false, image: null }]);
   const [positiveMarks, setPositiveMarks] = useState(1);
   const [negativeMarks, setNegativeMarks] = useState(0);
+  const navigate = useNavigate();
 
   const handleAddOption = () => {
     setOptions([...options, { text: '', isCorrect: false, image: null }]);
@@ -32,7 +33,7 @@ const MultipleCorrectQuestionForm = ({ onSave }) => {
     setOptions(updatedOptions);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     // Create an object with all the input data
     const formData = {
       question,
@@ -40,11 +41,30 @@ const MultipleCorrectQuestionForm = ({ onSave }) => {
       options,
       positiveMarks,
       negativeMarks,
+      questionType: 'multipleCorrect'
     };
 
-    // Call the onSave prop with the form data
-    onSave && onSave(formData);
-    console.log(formData);
+    try {
+      const response = await fetch('http://localhost:5000/api/saveFormData', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        onSave && onSave(formData);
+        console.log(formData);
+        navigate("/questions");
+      } else {
+        console.error('Failed to save form data:', result.message);
+      }
+    } catch (error) {
+      console.error('Error sending form data:', error);
+    }
   };
 
   return (
@@ -123,4 +143,3 @@ const MultipleCorrectQuestionForm = ({ onSave }) => {
 };
 
 export default MultipleCorrectQuestionForm;
-

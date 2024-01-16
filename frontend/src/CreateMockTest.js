@@ -1,24 +1,32 @@
 
+// CreateMockTest.js
 import React, { useState } from 'react';
-import AddQuestion from './AddQuestionPage';
-import { IconButton } from '@mui/material';
-import { Delete } from '@mui/icons-material';
+import { TextField, Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const CreateMockTest = () => {
   const [testName, setTestName] = useState('');
-  const [duration, setDuration] = useState(0);
-  const [questions, setQuestions] = useState([]);
+  const [duration, setDuration] = useState('');
+  const [isNextEnabled, setIsNextEnabled] = useState(false);
+  const navigate = useNavigate();
 
-  const handleAddQuestion = () => {
-    // Logic to add a new question to the array
-    const newQuestion = { /* your question object structure */ };
-    setQuestions([...questions, newQuestion]);
+  const handleTestNameChange = (e) => {
+    setTestName(e.target.value);
+    checkNextButtonStatus(e.target.value, duration);
   };
 
-  const handleDeleteQuestion = (index) => {
-    const updatedQuestions = [...questions];
-    updatedQuestions.splice(index, 1);
-    setQuestions(updatedQuestions);
+  const handleDurationChange = (e) => {
+    const value = parseInt(e.target.value, 10); // Parse the input value as an integer
+    setDuration(value);
+    checkNextButtonStatus(testName, value);
+  };
+
+  const checkNextButtonStatus = (testName, duration) => {
+    setIsNextEnabled(testName.trim() !== '' && !isNaN(duration) && duration > 0);
+  };
+
+  const handleNextClick = () => {
+    navigate('/questions', { state: { testName, duration } });
   };
 
   return (
@@ -27,39 +35,33 @@ const CreateMockTest = () => {
 
       <label>
         Test Name:
-        <input
+        <TextField
           type="text"
           value={testName}
-          onChange={(e) => setTestName(e.target.value)}
+          onChange={handleTestNameChange}
         />
       </label>
       <br />
 
       <label>
         Duration (in minutes):
-        <input
-          type="number"
+        <TextField
+          type="number" // Use number type for integer input
           value={duration}
-          onChange={(e) => setDuration(e.target.value)}
+          onChange={handleDurationChange}
         />
       </label>
       <br />
 
-      {/* Render questions */}
-      {questions.map((question, index) => (
-        <div key={index}>
-          {/* Render each question using the AddQuestion component */}
-          <AddQuestion question={question} />
-
-          {/* Delete Question Icon */}
-          <IconButton onClick={() => handleDeleteQuestion(index)}>
-            <Delete />
-          </IconButton>
-        </div>
-      ))}
-
-      {/* Button to add a new question */}
-      <button onClick={handleAddQuestion}>Add Question</button>
+      {/* Render Next button */}
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleNextClick}
+        disabled={!isNextEnabled}
+      >
+        Next
+      </Button>
     </div>
   );
 };
