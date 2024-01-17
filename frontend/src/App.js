@@ -54,9 +54,9 @@ const App = () => {
             <>
               <Route path="/TeacherHome" element={<TeacherHome userInfo={userInfo} />} />
               <Route path="/StudentHome" element={<StudentHome userInfo={userInfo} />} />
-              <Route path="/CreateMockTest" element={<CreateMockTest />} />
-              <Route path="/questions" element={<QuestionPage />} />
-              <Route path="/add-question" element={<AddQuestionPage />} />
+              <Route path="/CreateMockTest" element={<CreateMockTest userInfo={userInfo}/>} />
+              <Route path="/questions/:testName" element={<QuestionPage userInfo={userInfo}/>} />
+              <Route path="/add-question/:testName" element={<AddQuestionPage userInfo={userInfo}/>} />
             </>
           )}
 

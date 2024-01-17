@@ -88,7 +88,7 @@ import React, { useState } from 'react';
 import { TextField, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-const IntegerTypeQuestionForm = ({ onSave }) => {
+const IntegerTypeQuestionForm = ({ onSave, testName, username }) => {
   const [question, setQuestion] = useState('');
   const [questionImage, setQuestionImage] = useState(null);
   const [answer, setAnswer] = useState('');
@@ -101,41 +101,86 @@ const IntegerTypeQuestionForm = ({ onSave }) => {
     setQuestionImage(file);
   };
 
+  // const handleSave = async () => {
+  //   // Create an object with all the input data
+  //   const formData = {
+  //     question,
+  //     questionImage,
+  //     answer,
+  //     positiveMarks,
+  //     negativeMarks,
+  //     questionType: 'integerType',
+  //   };
+
+  //   try {
+  //     const response = await fetch('http://localhost:5000/api/saveFormData', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify(formData),
+  //     });
+
+  //     const result = await response.json();
+
+  //     if (result.success) {
+  //       onSave && onSave(formData);
+  //       console.log(formData);
+        
+  //     } else {
+  //       console.error('Failed to save form data:', result.message);
+  //     }
+  //     navigate("/questions");
+  //   } catch (error) {
+  //     console.error('Error sending form data:', error);
+  //   }
+  // };
   const handleSave = async () => {
-    // Create an object with all the input data
-    const formData = {
-      question,
-      questionImage,
-      answer,
-      positiveMarks,
-      negativeMarks,
+    const questionData = {
+
       questionType: 'integerType',
+      questionText: question,
+      questionImage: 'no img', // You need to handle image uploads separately
+      
+      positiveMark: positiveMarks,
+      negativeMark: negativeMarks,
+      
+      integerAns:answer,
+      positiveMark:positiveMarks,
+      negativeMark:negativeMarks,
     };
 
     try {
-      const response = await fetch('http://localhost:5000/api/saveFormData', {
+      const response = await fetch('http://localhost:8000/users-add-question', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          username,
+          role:'teacher',
+          tests: [
+            {
+              testName:testName.testName,
+              questions: [questionData],
+            },
+          ],
+        }),
       });
 
       const result = await response.json();
 
       if (result.success) {
-        onSave && onSave(formData);
-        console.log(formData);
-        
+        onSave && onSave(questionData);
+        console.log('Question data saved:', questionData);
       } else {
-        console.error('Failed to save form data:', result.message);
+        console.error('Failed to save question data:', result.message);
       }
-      navigate("/questions");
+      navigate(`/questions/${testName.testName}`);
     } catch (error) {
-      console.error('Error sending form data:', error);
+      console.error('Error sending question data:', error);
     }
   };
-
   return (
     <div>
       <h3>Integer Type Question</h3>

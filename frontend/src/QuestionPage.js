@@ -3,20 +3,48 @@ import './QuestionPage.css'
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useNavigate,useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
-const QuestionPage = () => {
+const QuestionPage = ({userInfo}) => {
   const [questions, setQuestions] = useState([]);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { state } = location;
+  const username = userInfo.username;
+  // const testName=state.testName;
+  const { testName } = useParams();
+  
+  // useEffect(() => {
+  //   const fetchQuestions = async () => {
+  //     try {
+  //       const response = await fetch('http://localhost:5000/api/getQuestions');
+  //       const data = await response.json();
 
+  //       console.log('Server response:', data);
+
+  //       if (data.success) {
+  //         setQuestions(data.questions || []);
+  //       } else {
+  //         console.error('Invalid data received from the server');
+  //       }
+  //     } catch (error) {
+  //       console.error('Error fetching questions:', error);
+  //     }
+  //   };
+
+  //   fetchQuestions();
+  // }, []);
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/getQuestions');
+        
+        const response = await fetch(`http://localhost:8000/api/getQuestions/${username}/${testName}`);
         const data = await response.json();
-
-        console.log('Server response:', data);
-
+        
         if (data.success) {
           setQuestions(data.questions || []);
+          console.log(questions);
         } else {
           console.error('Invalid data received from the server');
         }
@@ -26,8 +54,9 @@ const QuestionPage = () => {
     };
 
     fetchQuestions();
-  }, []);
+  }, [testName, username]);  // Add testName and username to the dependency array
 
+  
   const handleDelete = async (questionId) => {
     try {
       console.log('Question ID:', questionId);
@@ -67,13 +96,13 @@ const QuestionPage = () => {
     return (
       <li key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
-          <h3>{`Question ${questionNumber}: ${question.question}`}</h3>
+          <h3>{`Question ${questionNumber}: ${question.questionText}`}</h3>
           {question.questionType === 'singleCorrect' && renderOptions(question.options)}
           {question.questionType === 'multipleCorrect' && renderOptions(question.options)}
-          {question.questionType === 'integerType' && <p>Answer: {question.answer}</p>}
+          {question.questionType === 'integerType' && <p>Answer: {question.integerAns}</p>}
           {question.questionType === 'decimalType' && (
             <p>
-              Answer Range: {question.answerMin} to {question.answerMax}
+              Answer Range: {question.lowDecimal} to {question.highDecimal}
             </p>
           )}
         </div>
@@ -89,15 +118,18 @@ const QuestionPage = () => {
       </li>
     );
   };
-
+  const handleAddQuestionClick = () => {
+    navigate(`/add-question/${testName}` );
+  };
   return (
     <div>
       <h2>Questions</h2>
       <ul>{questions.map((question, index) => renderQuestion(question, index))}</ul>
 
-      <Link to="/add-question">
+      {/* <Link to="/add-question">
         <button>Add Question</button>
-      </Link>
+      </Link> */}
+      <button onClick={handleAddQuestionClick}>Add Question</button>
     </div>
   );
 };

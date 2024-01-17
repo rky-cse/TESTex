@@ -1,23 +1,27 @@
 import React, { useState } from 'react';
+import { useNavigate,useLocation,useParams } from 'react-router-dom';
 import SingleCorrectQuestionForm from './SingleCorrectQuestionForm';
 import MultipleCorrectQuestionForm from './MultipleCorrectQuestionForm';
 import IntegerTypeQuestionForm from './IntegerTypeQuestionForm';
 import DecimalTypeQuestionForm from './DecimalTypeQuestionForm';
 
-const AddQuestion = () => {
+const AddQuestion = ({userInfo}) => {
   const [selectedQuestionType, setSelectedQuestionType] = useState('');
-
+  const location = useLocation();
+  const username=userInfo.username;
+  const testName=useParams();
+  
   // Render the selected question type form based on the value of selectedQuestionType
   const renderQuestionForm = () => {
     switch (selectedQuestionType) {
       case 'singleCorrect':
-        return <SingleCorrectQuestionForm />;
+        return <SingleCorrectQuestionForm username={username} testName={testName}/>;
       case 'multipleCorrect':
-        return <MultipleCorrectQuestionForm />;
+        return <MultipleCorrectQuestionForm username={username} testName={testName}/>;
       case 'integerType':
-        return <IntegerTypeQuestionForm />;
+        return <IntegerTypeQuestionForm username={username} testName={testName}/>;
       case 'decimalType':
-        return <DecimalTypeQuestionForm />;
+        return <DecimalTypeQuestionForm username={username} testName={testName}/>;
       default:
         return null;
     }
@@ -50,3 +54,4 @@ const AddQuestion = () => {
 };
 
 export default AddQuestion;
+

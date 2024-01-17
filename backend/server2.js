@@ -7,7 +7,7 @@ const fs = require('fs').promises;
 const path = require('path'); // Added to handle path more reliably
 let questions = require('./data');
 const app = express();
-const port = 5000;
+const port = 8000;
 const secretKey = 'yourSecretKey'; // Replace with a strong secret key
 
 app.use(cors());
@@ -24,9 +24,9 @@ mongoose.connect('mongodb://127.0.0.1:27017/quizApp', { useNewUrlParser: true, u
 
 // Option Schema
 const optionSchema = new mongoose.Schema({
-  optionText: String,
+  text: String,
   isCorrect: Boolean,
-  optionImage: String,
+  image: String,
 });
 
 // Question Schema
@@ -304,6 +304,7 @@ app.get('/users', async (req, res) => {
 app.get('/api/getQuestions/:username/:testName', async (req, res) => {
   try {
     const { username, testName } = req.params;
+    console.log(username,testName);
 
     // Find the user by username
     const user = await UserModel.findOne({ username });
@@ -313,6 +314,7 @@ app.get('/api/getQuestions/:username/:testName', async (req, res) => {
     }
 
     // Find the test by test name
+    console.log(user);
     const test = user.tests.find(t => t.testName === testName);
 
     if (!test) {
@@ -327,6 +329,6 @@ app.get('/api/getQuestions/:username/:testName', async (req, res) => {
 });
 
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
 });
