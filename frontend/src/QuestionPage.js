@@ -58,10 +58,12 @@ const QuestionPage = ({userInfo}) => {
 
   
   const handleDelete = async (questionId) => {
+    console.log(questionId._id)
+    console.log(typeof(questionId._id))
     try {
       console.log('Question ID:', questionId);
 
-      const deleteResponse = await fetch(`http://localhost:5000/api/deleteQuestion/${questionId._id}`, {
+      const deleteResponse = await fetch(`http://localhost:8000/questions/${questionId._id}/${username}/${testName}`, {
         method: 'DELETE',
       });
 
