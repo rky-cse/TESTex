@@ -253,8 +253,123 @@ app.get('/api/getQuestions/:username/:testName', async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 });
+app.delete('/delete-test/:username/:testName', async (req, res) => {
+  const { username, testName } = req.params;
+  console.log(`Received request to delete test: ${testName} for user: ${username}`);
 
+  try {
+    // Find the user by username
+    const user = await UserModel.findOne({ username });
 
+    if (!user) {
+      return res.status(404).json({ success: false, error: 'User not found.' });
+    }
+
+    // Find the test by its name
+    const testIndex = user.tests.findIndex(test => test.testName === testName);
+
+    if (testIndex === -1) {
+      return res.status(404).json({ success: false, error: 'Test not found.' });
+    }
+
+    // Remove the test from the user's tests array
+    user.tests.splice(testIndex, 1);
+
+    // Save the updated user
+    await user.save();
+
+    res.status(200).json({ success: true, message: 'Test deleted successfully.' });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+app.get('/api/getTests/:username', async (req, res) => {
+  try {
+    const { username } = req.params;
+
+    // Find the user by username
+    const user = await UserModel.findOne({ username });
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found.' });
+    }
+
+    // Return the tests array
+    res.status(200).json({ success: true, tests: user.tests });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+app.get('/get-question/:username/:testName/:questionId', async (req, res) => {
+  const { username, testName, questionId } = req.params;
+  console.log(`Received request to fetch details for question ${questionId} in test ${testName} for user ${username}`);
+
+  try {
+    // Find the user by username
+    const user = await UserModel.findOne({ username });
+
+    if (!user) {
+      return res.status(404).json({ success: false, error: 'User not found.' });
+    }
+
+    // Find the test by its name
+    const test = user.tests.find(t => t.testName === testName);
+
+    if (!test) {
+      return res.status(404).json({ success: false, error: 'Test not found.' });
+    }
+
+    // Find the question by its ID
+    const question = test.questions.find(q => q._id.toString() === questionId);
+
+    if (!question) {
+      return res.status(404).json({ success: false, error: 'Question not found.' });
+    }
+
+    // Return the details of the question
+    res.status(200).json({ success: true, question });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+app.put('/questions/:questionId/:username/:testName', async (req, res) => {
+  const { questionId, username, testName } = req.params;
+  const updatedQuestionData = req.body.question;
+
+  try {
+    // Find the user by username
+    const user = await UserModel.findOne({ username });
+
+    if (!user) {
+      return res.status(401).json({ success: false, error: 'User not found.' });
+    }
+
+    // Find the test by its name
+    const test = user.tests.find(t => t.testName === testName);
+
+    if (!test) {
+      return res.status(402).json({ success: false, error: 'Test not found.' });
+    }
+
+    // Find the question in the test's questions array
+    const question = test.questions.find(q => q._id.toString() === questionId);
+
+    if (!question) {
+      return res.status(403).json({ success: false, error: 'Question not found in the specified test.' });
+    }
+
+    // Update the question details
+    Object.assign(question, updatedQuestionData);
+
+    // Save the updated user
+    await user.save();
+
+    res.status(200).json({ success: true, message: 'Question updated successfully.' });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });

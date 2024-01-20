@@ -1,23 +1,19 @@
 import React, { useState } from 'react';
 import { TextField, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-
-const IntegerTypeQuestionForm = ({ onSave, testName, username }) => {
-  const [question, setQuestion] = useState('');
+const IntegerTypeQuestionFormEdit = ({ onSave, testName, username,questionId, questionDetails }) => {
+  const [question, setQuestion] = useState(questionDetails.questionText);
   const [questionImage, setQuestionImage] = useState(null);
-  const [answer, setAnswer] = useState('');
-  const [positiveMarks, setPositiveMarks] = useState(1);
-  const [negativeMarks, setNegativeMarks] = useState(0);
+  const [answer, setAnswer] = useState(questionDetails.integerAns);
+  const [positiveMarks, setPositiveMarks] = useState(questionDetails.positiveMark);
+  const [negativeMarks, setNegativeMarks] = useState(questionDetails.negativeMark);
   const navigate = useNavigate();
-
   const handleQuestionImageChange = (e) => {
     const file = e.target.files[0];
     setQuestionImage(file);
   };
-
-  const handleSave = async () => {
+  const handleEdit = async () => {
     const questionData = {
-
       questionType: 'integerType',
       questionText: question,
       questionImage: 'no img', // You need to handle image uploads separately
@@ -31,36 +27,30 @@ const IntegerTypeQuestionForm = ({ onSave, testName, username }) => {
     };
 
     try {
-      const response = await fetch('http://localhost:8000/users-add-question', {
-        method: 'POST',
+      const response = await fetch(`http://localhost:8000/questions/${questionId}/${username}/${testName}`, {
+        method: 'PUT', // Use 'PATCH' if your server supports partial updates
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          username,
-          role:'teacher',
-          tests: [
-            {
-              testName:testName.testName,
-              questions: [questionData],
-            },
-          ],
+          question: questionData,
         }),
       });
 
       const result = await response.json();
 
-      // if (result.success) {
-      //   onSave && onSave(questionData);
-      //   console.log('Question data saved:', questionData);
-      // } else {
-      //   console.error('Failed to save question data:', result.message);
-      // }
-      navigate(`/questions/${testName.testName}`);
+      if (result.success) {
+        // Notify parent component or perform any other action upon successful edit
+        console.log('Question data edited:', questionData);
+      } else {
+        console.error('Failed to edit question data:', result.message);
+      }
+      navigate(`/questions/${testName}`);
     } catch (error) {
       console.error('Error sending question data:', error);
     }
   };
+  
   return (
     <div>
       <h3>Integer Type Question</h3>
@@ -101,11 +91,11 @@ const IntegerTypeQuestionForm = ({ onSave, testName, username }) => {
       />
 
       {/* Save Button */}
-      <Button variant="contained" color="primary" onClick={handleSave}>
-        Save
+      <Button variant="contained" color="primary" onClick={handleEdit}>
+        Edit and Save
       </Button>
     </div>
   );
-};
+}
 
-export default IntegerTypeQuestionForm;
+export default IntegerTypeQuestionFormEdit

@@ -3,12 +3,12 @@ import { TextField, Button, Checkbox, FormControlLabel, IconButton } from '@mui/
 import { Delete } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
-const MultipleCorrectQuestionForm = ({ onSave, testName, username }) => {
-  const [question, setQuestion] = useState('');
+const MultipleCorrectQuestionFormEdit = ({ onSave, testName, username,questionId, questionDetails }) => {
+  const [question, setQuestion] = useState(questionDetails.questionText);
   const [questionImage, setQuestionImage] = useState(null);
-  const [options, setOptions] = useState([{ text: '', isCorrect: false, image: null }]);
-  const [positiveMarks, setPositiveMarks] = useState(1);
-  const [negativeMarks, setNegativeMarks] = useState(0);
+  const [options, setOptions] = useState(questionDetails.options);
+  const [positiveMarks, setPositiveMarks] = useState(questionDetails.positiveMark);
+  const [negativeMarks, setNegativeMarks] = useState(questionDetails.negativeMark);
   const navigate = useNavigate();
 
   const handleAddOption = () => {
@@ -31,7 +31,7 @@ const MultipleCorrectQuestionForm = ({ onSave, testName, username }) => {
     updatedOptions[index][key] = value;
     setOptions(updatedOptions);
   };
-  const handleSave = async () => {
+    const handleEdit = async () => {
     const questionData = {
       questionType: 'multipleCorrect',
       questionText: question,
@@ -46,32 +46,25 @@ const MultipleCorrectQuestionForm = ({ onSave, testName, username }) => {
     };
 
     try {
-      const response = await fetch('http://localhost:8000/users-add-question', {
-        method: 'POST',
+      const response = await fetch(`http://localhost:8000/questions/${questionId}/${username}/${testName}`, {
+        method: 'PUT', // Use 'PATCH' if your server supports partial updates
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          username,
-          role:'teacher',
-          tests: [
-            {
-              testName:testName.testName,
-              questions: [questionData],
-            },
-          ],
+          question: questionData,
         }),
       });
 
       const result = await response.json();
 
-      // if (result.success) {
-      //   onSave && onSave(questionData);
-      //   console.log('Question data saved:', questionData);
-      // } else {
-      //   console.error('Failed to save question data:', result.message);
-      // }
-      navigate(`/questions/${testName.testName}`);
+      if (result.success) {
+        // Notify parent component or perform any other action upon successful edit
+        console.log('Question data edited:', questionData);
+      } else {
+        console.error('Failed to edit question data:', result.message);
+      }
+      navigate(`/questions/${testName}`);
     } catch (error) {
       console.error('Error sending question data:', error);
     }
@@ -143,13 +136,12 @@ const MultipleCorrectQuestionForm = ({ onSave, testName, username }) => {
         onChange={(e) => setNegativeMarks(e.target.value)}
         label="Negative Marks"
       />
-
-      {/* Save Button */}
-      <Button variant="contained" color="primary" onClick={handleSave}>
-        Save
+      <Button variant="contained" color="primary" onClick={handleEdit}>
+        Edit and Save
       </Button>
     </div>
   );
 };
 
-export default MultipleCorrectQuestionForm;
+export default MultipleCorrectQuestionFormEdit
+
