@@ -370,6 +370,31 @@ app.put('/questions/:questionId/:username/:testName', async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 });
+app.get('/api/getTest/:testId', async (req, res) => {
+  try {
+    const { testId } = req.params;
+
+    // Find the user with the matching test
+    const user = await UserModel.findOne({ 'tests._id': testId });
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'Test not found.' });
+    }
+
+    // Find the specific test within the user's tests array
+    const test = user.tests.find(t => t._id.toString() === testId);
+
+    if (!test) {
+      return res.status(404).json({ success: false, message: 'Test not found.' });
+    }
+
+    // Return the test details
+    res.status(200).json({ success: true, test });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });

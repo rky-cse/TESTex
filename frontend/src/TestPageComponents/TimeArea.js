@@ -1,11 +1,11 @@
 import React from 'react';
 
-const TimeArea = () => {
+const TimeArea = ({testDetails}) => {
   // Implement time-related functionality here
 
   return (
     <div>
-      <h3>Time Area</h3>
+      <h3>Time Area:{testDetails.duration}</h3>
       {/* Time-related content */}
     </div>
   );
