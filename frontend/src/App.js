@@ -12,6 +12,7 @@ import CreateMockTest from './CreateMockTest';
 import QuestionPage from './QuestionPage';
 import AddQuestionPage from './AddQuestionPage';
 import EditQuestion from './EditPages/EditQuestion';
+import TestPage from './TestPage'
 
 const App = () => {
   const [userRole, setUserRole] = useState(null);
@@ -59,6 +60,7 @@ const App = () => {
               <Route path="/questions/:testName" element={<QuestionPage userInfo={userInfo}/>} />
               <Route path="/add-question/:testName" element={<AddQuestionPage userInfo={userInfo}/>} />
               <Route path="/edit-question/:testName/:questionId" element={<EditQuestion userInfo={userInfo}/>} />
+              <Route path="/testpage/:testId" element={<TestPage userInfo={userInfo} />}/>
             </>
           )}
 
