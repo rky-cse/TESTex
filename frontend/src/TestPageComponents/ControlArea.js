@@ -1,7 +1,21 @@
-import React from 'react'
+// QuestionButtonArea.js
+import React from 'react';
 
-export default function ControlArea() {
+const ControlArea = ({ onNext, onBack, isSubmitEnabled }) => {
   return (
-    <div>ControlArea</div>
-  )
-}
+    <div>
+      {/* Other content for the QuestionButtonArea */}
+      <button onClick={onBack} disabled={false}>
+        Back
+      </button>
+      <button onClick={onNext} disabled={false}>
+       Save and Next
+      </button>
+      <button onClick={onNext} disabled={!isSubmitEnabled}>
+        {isSubmitEnabled ? 'Submit' : 'Next'}
+      </button>
+    </div>
+  );
+};
+
+export default ControlArea;

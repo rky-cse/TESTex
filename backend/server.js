@@ -384,14 +384,60 @@ app.get('/api/getTest/:testId', async (req, res) => {
     // Find the specific test within the user's tests array
     const test = user.tests.find(t => t._id.toString() === testId);
 
+
     if (!test) {
       return res.status(404).json({ success: false, message: 'Test not found.' });
     }
+    const tempTest=test;
+    tempTest.questions.forEach(question => {
+      question.options.forEach(option=>{
+        option.isCorrect=false;
+      })
+      question.lowDecimal=null
+      question.highDecimal=null
+      question.integerAns=null
+      
+    });
 
     // Return the test details
-    res.status(200).json({ success: true, test });
+    res.status(200).json({ success: true,test:tempTest });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
+  }
+});
+app.post('/api/updateStudentTests', async (req, res) => {
+  const { studentId, testDetails } = req.body;
+
+  try {
+    // Find the student by their userId
+    console.log(testDetails._id.toString())
+ 
+   const student = await UserModel.findOne({ username: studentId })
+
+   if(student){
+    const exist=student.tests.find(t => t._id.toString() ===testDetails._id.toString())
+    if(exist){
+      return res.status(200).json({ success: true, message: 'Student tests updated successfully' });
+    }
+   }
+
+    if (!student) {
+      return res.status(404).json({ success: false, error: 'Student not found' });
+    }
+
+    // Update the tests array for the found student
+    student.tests.push(testDetails);
+
+    // Save the updated student in the database
+    
+
+    
+    await student.save();
+
+    return res.status(200).json({ success: true, message: 'Student tests updated successfully' });
+  } catch (error) {
+    console.error('Error updating student tests:', error);
+    return res.status(500).json({ success: false, error: 'Internal Server Error' });
   }
 });
 
