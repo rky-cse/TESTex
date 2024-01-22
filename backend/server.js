@@ -405,7 +405,7 @@ app.get('/api/getTest/:testId', async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 });
-app.post('/api/updateStudentTests', async (req, res) => {
+app.post('/api/addTestInStudent', async (req, res) => {
   const { studentId, testDetails } = req.body;
 
   try {

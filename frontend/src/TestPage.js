@@ -34,11 +34,11 @@ const TestPage = ({userInfo}) => {
 
 
   console.log(userInfo.username)
-  const updateStudentTests = async (testDetails) => {
+  const addTestInStudent = async (testDetails) => {
     
     try {
       // Assuming you have an API endpoint to update the student's tests
-      const response = await fetch('http://localhost:8000/api/updateStudentTests', {
+      const response = await fetch('http://localhost:8000/api/addTestInStudent', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -66,7 +66,7 @@ const TestPage = ({userInfo}) => {
     return <div>Loading...</div>;
   }
   if(testDetails){
-    updateStudentTests(testDetails);
+    addTestInStudent(testDetails);
   }
   const handleNext = () => {
     // Check if the current question is the last one
