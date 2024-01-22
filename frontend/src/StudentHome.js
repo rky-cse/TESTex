@@ -17,10 +17,6 @@ const TestDetails=useRef('');
     navigate('/login');
   };
 
-
-  
-    
- 
   const addTestInStudent = async (testDetails) => {
     
     try {
@@ -56,8 +52,6 @@ const TestDetails=useRef('');
       if (data.success) {
         TestDetails.current=data.test;
       
-        
-
       } else {
         console.error('Failed to fetch test details:', data.error);
       }
@@ -76,10 +70,7 @@ const TestDetails=useRef('');
       // Navigate to the test page with the joined test name
     await  fetchTestDetails();
     await addTestInStudent(TestDetails.current);
-    
-
-    
-      navigate(`/testpage/${inputValue}`);
+    navigate(`/testpage/${inputValue}`);
     } else {
       // Display an error or inform the user that the input is empty
       console.error('Please enter a test');

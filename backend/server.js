@@ -440,6 +440,27 @@ app.post('/api/addTestInStudent', async (req, res) => {
     return res.status(500).json({ success: false, error: 'Internal Server Error' });
   }
 });
+// Endpoint to fetch test details by username and test ID
+app.get('/api/getTestDetails/:username/:testId', async (req, res) => {
+  try {
+    const { username, testId } = req.params;
+
+    const user = await UserModel.findOne({ username });
+    if (!user) {
+      return res.json({ success: false, error: 'User not found' });
+    }
+
+    const test = user.tests.find(test => test._id.toString() === testId);
+    if (!test) {
+      return res.json({ success: false, error: 'Test not found' });
+    }
+
+    res.json({ success: true, test });
+  } catch (error) {
+    console.error('Error fetching test details:', error);
+    res.json({ success: false, error: 'Internal server error' });
+  }
+});
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
