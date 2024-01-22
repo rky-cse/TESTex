@@ -1,9 +1,11 @@
 
 import './StudentHome.css';
-import React, { useState } from 'react';
+import React, { useState ,useEffect,useRef} from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const StudentHome = ({ userInfo }) => {
+
+const TestDetails=useRef('');
   const [inputValue, setInputValue] = useState('');
   const navigate = useNavigate();
 
@@ -15,19 +17,75 @@ const StudentHome = ({ userInfo }) => {
     navigate('/login');
   };
 
-  const handleJoin = () => {
+
+  
+    
+ 
+  const addTestInStudent = async (testDetails) => {
+    
+    try {
+      // Assuming you have an API endpoint to update the student's tests
+      const response = await fetch('http://localhost:8000/api/addTestInStudent', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          studentId: userInfo.username, // Replace with the actual student ID
+          testDetails: testDetails,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        console.log('Student tests updated successfully');
+      } else {
+        console.error('Failed to update student tests:', data.error);
+      }
+    } catch (error) {
+      console.error('Error updating student tests:', error);
+    }
+    
+  };
+  const fetchTestDetails = async () => {
+    try {
+      const response = await fetch(`http://localhost:8000/api/getTest/${inputValue}`);
+      const data = await response.json();
+
+      if (data.success) {
+        TestDetails.current=data.test;
+      
+        
+
+      } else {
+        console.error('Failed to fetch test details:', data.error);
+      }
+    } catch (error) {
+      console.error('Error fetching test details:', error);
+    }
+  };
+
+
+
+
+  const handleJoin = async() => {
     // Handle the join action with the inputValue
     if (inputValue.trim() !== '') {
-      // Perform your logic for joining the test
-      console.log(`Joining test: ${inputValue}`);
-
+      
       // Navigate to the test page with the joined test name
+    await  fetchTestDetails();
+    await addTestInStudent(TestDetails.current);
+    
+
+    
       navigate(`/testpage/${inputValue}`);
     } else {
       // Display an error or inform the user that the input is empty
       console.error('Please enter a test');
     }
   };
+
 
   return (
     <div>
