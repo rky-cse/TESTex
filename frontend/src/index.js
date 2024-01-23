@@ -8,10 +8,10 @@ root.render(
   // <React.StrictMode>
   //   <App />
   // </React.StrictMode>
-  <React.StrictMode>
+  // <React.StrictMode>
     <QuestionDataProvider>
       <App />
     </QuestionDataProvider>
-  </React.StrictMode>
+  // </React.StrictMode>
 );
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
-const TimeArea = ({testDetails}) => {
-  const initialTimeInSeconds = testDetails.duration*60; // 5 minutes in seconds
+const TimeArea = ({duration}) => {
+  const initialTimeInSeconds =duration*60; // 5 minutes in seconds
   const [timeRemaining, setTimeRemaining] = useState(() => {
     // Retrieve the timeRemaining from local storage or use the initial value
     const storedTime = localStorage.getItem('timeRemaining');
@@ -42,3 +42,4 @@ const TimeArea = ({testDetails}) => {
 };
 
 export default TimeArea;
+

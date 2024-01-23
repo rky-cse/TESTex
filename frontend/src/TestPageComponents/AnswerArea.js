@@ -1,97 +1,106 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
-const AnswerArea = ({ testDetails, index }) => {
-  const options = testDetails.questions[index].options;
-  const questionType = testDetails.questions[index].questionType;
-  const [selectedOptions, setSelectedOptions] = useState([]);
-  const [integerAnswer,setIntegerAnswer]=useState();
-  const [decimalAnswer,setDecimalAnswer]=useState();
+const AnswerArea = ({ question, optionsRef, integerAnsRef, lowDecimalRef, highDecimalRef }) => {
+  const [options, setOptions] = useState([]);
+  const [rerenderCounter, setRerenderCounter] = useState(0);
 
-  const handleOptionChange = (option) => {
-    if (questionType === 'singleCorrect') {
-      // For single correct question, only one option can be selected at a time
-      setSelectedOptions([option]);
-    } else {
-      // For multiple correct, toggle the selected state of the option
-      setSelectedOptions((prevSelectedOptions) => {
-        if (prevSelectedOptions.includes(option)) {
-          return prevSelectedOptions.filter(
-            (selectedOption) => selectedOption !== option
-          );
-        } else {
-          return [...prevSelectedOptions, option];
-        }
-      });
+  useEffect(() => {
+    if (question.questionType !== 'integerType' && question.questionType !== 'decimalType') {
+      setOptions(question.options.map((option) => ({ ...option, selected: false })));
     }
+  }, [question]);
+
+  useEffect(() => {
+    optionsRef.current = options;
+  }, [options, optionsRef]);
+
+  const handleSingleCorrectChange = (optionId) => {
+    setOptions((prevOptions) =>
+      prevOptions.map((option) => ({
+        ...option,
+        selected: option._id === optionId,
+        isCorrect:option._id === optionId
+      }))
+    );
+
+    // Update the isCorrect property of all options
+    optionsRef.current = optionsRef.current.map((option) => ({
+      ...option,
+      isCorrect: option._id === optionId,
+    }));
+
+    setRerenderCounter((prevCounter) => prevCounter + 1);
   };
-  const renderAnswerOptions = () => {
-    if (!options || options.length === 0) {
-      return <p>No answer options available.</p>;
-    }
-  
-    return options.map((option, index) => (
-      <div key={index}>
-        {questionType === 'integerType' && (
-          <input
-            type="number"
-            value={selectedOptions.includes(option.text) ? selectedOptions[0] : ''}
-            onChange={(e) => handleOptionChange(e.target.value)}
-          />
-        )}
-        {questionType === 'decimalType' && (
-          <input
-            type="number"
-            step="0.01"
-            value={selectedOptions.includes(option.text) ? selectedOptions[0] : ''}
-            onChange={(e) => handleOptionChange(e.target.value)}
-          />
-        )}
-        {questionType === 'singleCorrect' && (
-          <input
-            type="radio"
-            name="singleCorrectOption"
-            checked={selectedOptions[0] === option.text}
-            onChange={() => handleOptionChange(option.text)}
-          />
-        )}
-        {questionType === 'multipleCorrect' && (
-          <input
-            type="checkbox"
-            checked={selectedOptions.includes(option.text)}
-            onChange={() => handleOptionChange(option.text)}
-          />
-        )}
-        <label>{option.text}</label>
-      </div>
-    ));
+
+  const handleMultipleCorrectChange = (optionId) => {
+    setOptions((prevOptions) =>
+      prevOptions.map((option) => ({
+        ...option,
+        selected: option._id === optionId ? !option.selected : option.selected,
+        isCorrect:option._id === optionId
+      }))
+    );
+    optionsRef.current = optionsRef.current.map((option) => ({
+      ...option,
+      isCorrect: option._id === optionId,
+    }));
+
+    setRerenderCounter((prevCounter) => prevCounter + 1);
   };
-  
+
+  const handleIntegerChange = (e) => {
+    const value = e.target.value;
+    integerAnsRef.current = value;
+    setRerenderCounter((prevCounter) => prevCounter + 1);
+  };
+
+  const handleDecimalChange = (e) => {
+    const value = e.target.value;
+    lowDecimalRef.current = value;
+    highDecimalRef.current = value; // Assuming both low and high are the same for simplicity
+    setRerenderCounter((prevCounter) => prevCounter + 1);
+  };
+
   return (
     <div>
-      <h3>Answer Area</h3>
-      {renderAnswerOptions()}
-      {/* Add empty input fields for 'integerType' and 'decimalType' */}
-      {questionType === 'integerType' && (
-        <div>
-          <input
-            type="number"
-            value={integerAnswer}
-            onChange={(e) => setIntegerAnswer(e.target.value)}
-          />
-          <label>Empty Integer Field</label>
-        </div>
+      <p>{question.questionText}</p>
+      {question.questionType === 'singleCorrect' && (
+        <form>
+          {options.map((option) => (
+            <div key={option._id}>
+              <input
+                type="radio"
+                id={option._id}
+                name="singleCorrect"
+                checked={option.selected}
+                onChange={() => handleSingleCorrectChange(option._id)}
+              />
+              <label htmlFor={option._id}>{option.text}</label>
+            </div>
+          ))}
+        </form>
       )}
-      {questionType === 'decimalType' && (
-        <div>
-          <input
-            type="number"
-            step="0.01"
-            value={decimalAnswer}
-            onChange={(e) =>setDecimalAnswer(e.target.value)}
-          />
-          <label>Empty Decimal Field</label>
-        </div>
+      {question.questionType === 'multipleCorrect' && (
+        <form>
+          {options.map((option) => (
+            <div key={option._id}>
+              <input
+                type="checkbox"
+                id={option._id}
+                checked={option.selected}
+                onChange={() => handleMultipleCorrectChange(option._id)}
+              />
+              <label htmlFor={option._id}>{option.text}</label>
+            </div>
+          ))}
+        </form>
+      )}
+      {question.questionType === 'integerType' && (
+        <input type="number" onChange={handleIntegerChange} />
+      )}
+      {question.questionType === 'decimalType' && (
+        <input type="number" step="any" onChange={handleDecimalChange} />
       )}
     </div>
   );

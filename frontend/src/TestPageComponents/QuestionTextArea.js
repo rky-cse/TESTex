@@ -1,8 +1,21 @@
-import React from 'react'
+// QuestionTextArea.js
+import React from 'react';
 
-export default function QuestionTextArea({testDetails,index}) {
-    console.log(testDetails.questions[index].questionText)
+const QuestionTextArea = ({ question ,questionNumber}) => {
+  if (!question) {
+    return null; // Render nothing if no question is provided
+  }
+
+  const { questionType,questionText } = question;
+  
+
   return (
-    <div>{testDetails.questions[index].questionText}</div>
-  )
-}
+    <div>
+      <p>Question Type: {questionType}</p>
+      <p>Question Number: {questionNumber}</p>
+      <p>Question Text: {questionText}</p>
+    </div>
+  );
+};
+
+export default QuestionTextArea;

@@ -462,6 +462,51 @@ app.get('/api/getTestDetails/:username/:testId', async (req, res) => {
   }
 });
 
+// Endpoint to update a question
+app.put('/api/updateQuestion/:username/:questionId', async (req, res) => {
+  const { username, questionId } = req.params;
+  const { options, integerAns, lowDecimal, highDecimal } = req.body;
+
+  try {
+    const student = await UserModel.findOne({ username });
+
+    if (student) {
+      const test = student.tests.find((t) => t.questions.some((q) => q._id.equals(questionId)));
+
+      if (test) {
+        const question = test.questions.find((q) => q._id.equals(questionId));
+
+        if (question) {
+          // Update the question fields
+          question.options = options || question.options;
+          question.integerAns = integerAns !== undefined ? integerAns : question.integerAns;
+          question.lowDecimal = lowDecimal !== undefined ? lowDecimal : question.lowDecimal;
+          question.highDecimal = highDecimal !== undefined ? highDecimal : question.highDecimal;
+
+          await student.save();
+
+          res.json({ success: true, message: 'Question updated successfully' });
+        } else {
+          res.json({ success: false, error: 'Question not found for the provided questionId' });
+        }
+      } else {
+        res.json({ success: false, error: 'Test not found containing the provided questionId' });
+      }
+    } else {
+      res.json({ success: false, error: 'Student not found for the provided username' });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Internal server error' });
+  }
+});
+// app.put('/api/updateQuestion/:username/:questionId', async (req, res) => {
+//   console.log('Received PUT request:', req.params, req.body);
+
+//   // ... rest of the code
+// });
+
+
+
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
