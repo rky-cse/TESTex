@@ -38,16 +38,19 @@ const AnswerArea = ({ question, optionsRef, integerAnsRef, lowDecimalRef, highDe
       prevOptions.map((option) => ({
         ...option,
         selected: option._id === optionId ? !option.selected : option.selected,
-        isCorrect:option._id === optionId
+        isCorrect: option.selected || (option._id === optionId && !option.isCorrect),
       }))
     );
+  
     optionsRef.current = optionsRef.current.map((option) => ({
       ...option,
-      isCorrect: option._id === optionId,
+      isCorrect: option.selected || (option._id === optionId && !option.isCorrect),
     }));
-
+  
     setRerenderCounter((prevCounter) => prevCounter + 1);
   };
+  
+  
 
   const handleIntegerChange = (e) => {
     const value = e.target.value;
