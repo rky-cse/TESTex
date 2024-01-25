@@ -1,0 +1,18 @@
+/* QuestionButton.css */
+.question-buttons {
+    display: flex;
+  }
+  
+  .question-buttons button {
+    width: 30px; /* Adjust the width as needed */
+    height: 30px; /* Adjust the height as needed */
+    margin: 5px; /* Adjust the margin as needed */
+    border: 1px solid #ccc; /* Optional: Add a border */
+    border-radius: 5px; /* Optional: Add border-radius for a rounded appearance */
+  }
+  
+  .question-buttons button.active {
+    background-color: #007bff; /* Optional: Change the background color for the active button */
+    color: #fff; /* Optional: Change the text color for the active button */
+  }
+  

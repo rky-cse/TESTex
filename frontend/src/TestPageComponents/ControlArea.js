@@ -12,8 +12,7 @@ export default function ControlArea({ setCurrentQuestionIndex, currentQuestionIn
   const handleBack = () => {
     setCurrentQuestionIndex((currentQuestionIndex) => Math.max(currentQuestionIndex - 1, 0));
   };
-
-
+  
   const handleUpdateQuestion = async () => {
 
     try {

@@ -75,7 +75,11 @@ return (
        highDecimalRef={highDecimalRef}
        testId={testId}
       />
-      <QuestionButtonArea />
+      <QuestionButtonArea 
+      setCurrentQuestionIndex={setCurrentQuestionIndex} 
+      questionsLength={questions.length} 
+      currentQuestionIndex={currentQuestionIndex}
+      />
       <StatusArea />
     </div>
   );
