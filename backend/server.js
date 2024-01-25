@@ -226,6 +226,7 @@ app.get('/users', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
 // Express route for getting questions by username and test name
 app.get('/api/getQuestions/:username/:testName', async (req, res) => {
   try {
@@ -253,6 +254,7 @@ app.get('/api/getQuestions/:username/:testName', async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 });
+
 app.delete('/delete-test/:username/:testName', async (req, res) => {
   const { username, testName } = req.params;
   console.log(`Received request to delete test: ${testName} for user: ${username}`);
@@ -283,6 +285,7 @@ app.delete('/delete-test/:username/:testName', async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 });
+
 app.get('/api/getTests/:username', async (req, res) => {
   try {
     const { username } = req.params;
@@ -370,6 +373,7 @@ app.put('/questions/:questionId/:username/:testName', async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 });
+
 app.get('/api/getTest/:testId', async (req, res) => {
   try {
     const { testId } = req.params;
@@ -499,12 +503,32 @@ app.put('/api/updateQuestion/:username/:questionId', async (req, res) => {
     res.status(500).json({ success: false, error: 'Internal server error' });
   }
 });
-// app.put('/api/updateQuestion/:username/:questionId', async (req, res) => {
-//   console.log('Received PUT request:', req.params, req.body);
 
-//   // ... rest of the code
-// });
 
+app.get('/api/getTestById/:testId', async (req, res) => {
+  try {
+    const { testId } = req.params;
+
+    // Find the user with the matching test
+    const user = await UserModel.findOne({ 'tests._id': testId });
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'Test not found.' });
+    }
+
+    // Find the specific test within the user's tests array
+    const test = user.tests.find(t => t._id.toString() === testId);
+
+
+    if (!test) {
+      return res.status(404).json({ success: false, message: 'Test not found.' });
+    }
+  
+    res.status(200).json({ success: true,test:test });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
 
 
 app.listen(port, () => {

@@ -13,6 +13,7 @@ import QuestionPage from './QuestionPage';
 import AddQuestionPage from './AddQuestionPage';
 import EditQuestion from './EditPages/EditQuestion';
 import TestPage from './TestPage'
+import ResultPage from './ResultPage';
 
 const App = () => {
   const [userRole, setUserRole] = useState(null);
@@ -61,6 +62,7 @@ const App = () => {
               <Route path="/add-question/:testName" element={<AddQuestionPage userInfo={userInfo}/>} />
               <Route path="/edit-question/:testName/:questionId" element={<EditQuestion userInfo={userInfo}/>} />
               <Route path="/testpage/:testId" element={<TestPage userInfo={userInfo} />}/>
+              <Route path="/result/:testId" element={<ResultPage username={userInfo.username} />}/>
             </>
           )}
 

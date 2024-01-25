@@ -38,18 +38,14 @@ const TestPage = (props) => {
           
           >Loading...</TestFetch>)
   }
-  console.log(lowDecimalRef)
-  console.log(integerAnsRef)
-  console.log(optionsRef.current);
-
-  return (
+ 
+return (
     <div>
       <h1>Test Page</h1>
       <p>Test ID: {testId}</p>
       <p>Username: {userInfo.username}</p>
 
-      {/* Use TestFetch to handle fetching logic */}
-      <TestFetch userInfo={userInfo} testId={testId} setTestDetails={setTestDetails} setQuestions={setQuestions} />
+   
 
       {/* Render components */}
       <TimeArea duration={testDetails.duration} />
@@ -77,6 +73,7 @@ const TestPage = (props) => {
        integerAnsRef={integerAnsRef}
        lowDecimalRef={lowDecimalRef}
        highDecimalRef={highDecimalRef}
+       testId={testId}
       />
       <QuestionButtonArea />
       <StatusArea />
@@ -85,4 +82,3 @@ const TestPage = (props) => {
 };
 
 export default TestPage;
-
