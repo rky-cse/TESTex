@@ -1,0 +1,35 @@
+/* Define your color classes */
+.normal {
+    background-color: #ffffff; /* default color */
+    color: #000000; /* default text color */
+  }
+  
+  .green {
+    background-color: #00ff00; /* green */
+    color: #000000; /* default text color */
+  }
+  
+  .red {
+    background-color: #ff0000; /* red */
+    color: #ffffff; /* white text for better visibility */
+  }
+  
+  .yellow {
+    background-color: #ffff00; /* yellow */
+    color: #000000; /* default text color */
+  }
+  
+  /* Style for each option box */
+  div {
+    padding: 5px;
+    margin: 5px;
+    border: 1px solid #000000; /* default border color */
+  }
+  
+  /* Style for the integerType and decimalType answer display */
+  .green {
+    color: #00ff00; /* green text color */
+  }
+  
+  /* Add more styling as needed */
+  

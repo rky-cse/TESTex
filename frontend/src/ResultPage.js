@@ -1,6 +1,6 @@
 
 import React, { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams,useNavigate} from 'react-router-dom';
 
 const ResultPage = ({ username }) => {
   const { testId } = useParams();
@@ -9,6 +9,8 @@ const ResultPage = ({ username }) => {
   const studentTestRef = useRef(null);
   const [studentScore, setStudentScore] = useState(null);
   const [dataLoaded, setDataLoaded] = useState(false);
+  
+  const navigate = useNavigate(); // useNavigate hook for navigation
 
   useEffect(() => {
     const fetchTeacherTest = async () => {
@@ -83,19 +85,6 @@ const ResultPage = ({ username }) => {
               }
               break;
             case 'multipleCorrect':
-              // const correctOptions = correspondingTeacherQuestion.options.filter((opt) => opt.isCorrect);
-              // const studentSelectedOptions = studentQuestion.options.filter((opt) => opt.isCorrect);
-
-              // if (
-              //   correctOptions.length === studentSelectedOptions.length &&
-              //   correctOptions.every((opt) => studentSelectedOptions.some((selectedOpt) => selectedOpt._id === opt._id))
-              // ) {
-              //   obtainedMarks += correspondingTeacherQuestion.positiveMark;
-              // } else if (studentSelectedOptions.every((opt) => opt.isCorrect) && !studentSelectedOptions.some((opt) => !opt.isCorrect)) {
-              //   obtainedMarks += (correspondingTeacherQuestion.positiveMark / correspondingTeacherQuestion.options.length) * studentSelectedOptions.length;
-              // } else {
-              //   obtainedMarks += correspondingTeacherQuestion.negativeMark;
-              // }
               let f=0,cnt=0,totcrct=0;
               for(let i=0;i<correspondingTeacherQuestion.options.length;i++){
                 if(correspondingTeacherQuestion.options[i].isCorrect===false){
@@ -151,6 +140,10 @@ const ResultPage = ({ username }) => {
   console.log(studentTestRef.current);
   console.log(teacherTestRef.current);
 
+  const handleViewSolutionsClick = () => {
+    // Assuming you have a route like '/solutions/:testId'
+    navigate(`/solutions/${testId}`);
+  };
   return (
     <div>
       <h1>Test Result</h1>
@@ -159,6 +152,7 @@ const ResultPage = ({ username }) => {
           <p>Student Score: {studentScore}</p>
           <p>Total Marks: {totalMarks}</p>
           <p>Percentage: {(studentScore / totalMarks) * 100}%</p>
+          <button onClick={handleViewSolutionsClick}>View Solutions</button>
         </>
       ) : (
         <p>Loading...</p>
