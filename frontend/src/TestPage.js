@@ -1,7 +1,3 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useParams,useNavigate} from 'react-router-dom';
-
-// TestPage.js
 import React, { useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import TimeArea from './TestPageComponents/TimeArea';
