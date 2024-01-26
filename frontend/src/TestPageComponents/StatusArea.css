@@ -1,0 +1,15 @@
+/* Add these styles to your CSS file */
+
+.status-count-box {
+    width: 120px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 5px;
+    border: 1px solid #000;
+    font-weight: bold;
+  }
+  
+  /* ... existing styles ... */
+  
