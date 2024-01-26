@@ -14,11 +14,11 @@ const StatusArea = ({ questionStatus }) => {
   };
 
   const getCounts = () => {
-    const counts = { answered: 0, visited: 0, notVisited: 0 };
+    const counts = { answered: 0, notAnswered: 0, notVisited: 0 };
     questionStatus.forEach((status) => {
       switch (status) {
         case 1:
-          counts.visited++;
+          counts.notAnswered++;
           break;
         case 2:
           counts.answered++;
@@ -38,8 +38,11 @@ const StatusArea = ({ questionStatus }) => {
       <div className="status-count-box answered-box">
         Answered: {counts.answered}
       </div>
+      <div className="status-count-box not-answered-box">
+        Not Answered: {counts.notAnswered}
+      </div>
       <div className="status-count-box visited-box">
-        Visited: {counts.visited}
+        Visited: {counts.answered+counts.notAnswered}
       </div>
       <div className="status-count-box not-visited-box">
         Not Visited: {counts.notVisited}

@@ -1,56 +1,114 @@
-// import './QuestionButton.css'; // Import your CSS file
 
-// const QuestionButtonArea = ({ questionsLength, setCurrentQuestionIndex,currentQuestionIndex ,questionstatus}) => {
+// // import React from 'react';
+// // import './QuestionButton.css'; // Import your CSS file
+
+// // const QuestionButtonArea = ({ questionsLength, setCurrentQuestionIndex, currentQuestionIndex, questionStatus }) => {
+// //   const renderButtons = () => {
+// //     const buttons = [];
+// //     for (let i = 0; i < questionsLength; i++) {
+// //       const status = questionStatus && questionStatus[i];
+// //       buttons.push(
+// //         <div key={i}>
+// //           <button
+// //             onClick={() => setCurrentQuestionIndex(i)}
+// //             className={currentQuestionIndex === i ? 'active' : getButtonStatusClass(status)}
+// //           >
+// //             {i + 1}
+// //           </button>
+// //         </div>
+// //       );
+// //     }
+// //     return buttons;
+// //   };
+
+// //   const getButtonStatusClass = (status) => {
+// //     switch (status) {
+// //       case 1:
+// //         return 'answered';
+// //       case 2:
+// //         return 'visited';
+// //       default:
+// //         return 'grey';
+// //     }
+// //   };
+
+// //   return <div className="question-buttons">{renderButtons()}</div>;
+// // };
+
+// // export default QuestionButtonArea;
+// // QuestionButtonArea.jsx
+// import React from 'react';
+// import './QuestionButton.css';
+
+// const QuestionButtonArea = ({ questionsLength, setCurrentQuestionIndex, currentQuestionIndex, questionStatus }) => {
 //   const renderButtons = () => {
 //     const buttons = [];
-//     for (let i = 0; i <questionsLength; i++) {
+//     const gridSize = Math.ceil(questionsLength / 5) * 5; // Calculate the nearest multiple of 5
+
+//     for (let i = 0; i < gridSize; i++) {
+//       const questionIndex = i % questionsLength; // Use modulo to loop through questions
+//       const status = questionStatus && questionStatus[questionIndex];
+
 //       buttons.push(
 //         <div key={i}>
 //           <button
-//             onClick={() => setCurrentQuestionIndex(i)}
-//             className={currentQuestionIndex === i ? 'active' : ''}
+//             onClick={() => setCurrentQuestionIndex(questionIndex)}
+//             className={currentQuestionIndex === questionIndex ? 'active' : getButtonStatusClass(status)}
 //           >
-//             {i + 1} question
+//             {questionIndex + 1}
 //           </button>
 //         </div>
 //       );
 //     }
+
 //     return buttons;
 //   };
 
-//   // console.log('Buttons:', renderButtons()); // Add this line for debugging
-//   // console.log(totalQuestions)
-//   return (
-//     <div className="question-buttons">
-//       {renderButtons()}
-//     </div>
-//   );
+//   const getButtonStatusClass = (status) => {
+//     switch (status) {
+//       case 1:
+//         return 'answered';
+//       case 2:
+//         return 'visited';
+//       default:
+//         return 'grey';
+//     }
+//   };
+
+//   return <div className="question-buttons">{renderButtons()}</div>;
 // };
 
 // export default QuestionButtonArea;
+
+// QuestionButtonArea.jsx
 import React from 'react';
-import './QuestionButton.css'; // Import your CSS file
+import './QuestionButton.css';
 
 const QuestionButtonArea = ({ questionsLength, setCurrentQuestionIndex, currentQuestionIndex, questionStatus }) => {
-  const renderButtons = () => {
-    const buttons = [];
-    for (let i = 0; i < questionsLength; i++) {
-      const status = questionStatus && questionStatus[i];
-      buttons.push(
-        <div key={i}>
-          <button
-            onClick={() => setCurrentQuestionIndex(i)}
-            className={currentQuestionIndex === i ? 'active' : getButtonStatusClass(status)}
-          >
-            {i + 1}
-          </button>
+  const gridSize = Math.ceil(questionsLength / 5) * 5; // Calculate the nearest multiple of 5
+
+  const renderGridCells = () => {
+    const gridCells = [];
+    
+    for (let i = 0; i < gridSize; i++) {
+      const questionIndex = i % questionsLength; // Use modulo to loop through questions
+      const status = questionStatus && questionStatus[questionIndex];
+
+      gridCells.push(
+        <div
+          key={i}
+          onClick={() => setCurrentQuestionIndex(questionIndex)}
+          className={`grid-cell ${currentQuestionIndex === questionIndex ? 'active' : getCellStatusClass(status)}`}
+        >
+          {questionIndex + 1}
         </div>
       );
     }
-    return buttons;
+
+    return gridCells;
   };
 
-  const getButtonStatusClass = (status) => {
+  const getCellStatusClass = (status) => {
     switch (status) {
       case 1:
         return 'answered';
@@ -61,7 +119,7 @@ const QuestionButtonArea = ({ questionsLength, setCurrentQuestionIndex, currentQ
     }
   };
 
-  return <div className="question-buttons">{renderButtons()}</div>;
+  return <div className="question-grid">{renderGridCells()}</div>;
 };
 
 export default QuestionButtonArea;

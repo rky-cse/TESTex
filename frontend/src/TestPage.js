@@ -7,6 +7,7 @@ import ControlArea from './TestPageComponents/ControlArea';
 import QuestionButtonArea from './TestPageComponents/QuestionButtonArea';
 import StatusArea from './TestPageComponents/StatusArea';
 import TestFetch from './TestPageComponents/TestFetch';
+import './TestPage.css'
 
 const TestPage = (props) => {
   const { testId } = useParams();
@@ -41,42 +42,57 @@ const TestPage = (props) => {
   console.log(questionStatus)
 
   return (
-    <div>
-      <h1>Test Page</h1>
-      <p>Test ID: {testId}</p>
-      <p>Username: {userInfo.username}</p>
+    <div className="test-page-container">
+      <div className="left-container">
+        <div className="up-part">
+    
+         <h1>Exam Name: {testDetails.testName}</h1>
+          <p>Candidate Username: {userInfo.username}</p>
+          <QuestionTextArea question={questions[currentQuestionIndex]} questionNumber={currentQuestionIndex + 1} />
+        </div>
+        <div className="middle-part">
+          <AnswerArea
+            question={questions[currentQuestionIndex]}
+            optionsRef={optionsRef}
+            integerAnsRef={integerAnsRef}
+            lowDecimalRef={lowDecimalRef}
+            highDecimalRef={highDecimalRef}
+          />
+        </div>
+        <div className="down-part">
+          <ControlArea
+            setCurrentQuestionIndex={setCurrentQuestionIndex}
+            currentQuestionIndex={currentQuestionIndex}
+            questionsLength={questions.length}
+            username={userInfo.username}
+            questionId={questions[currentQuestionIndex]._id}
+            optionsRef={optionsRef}
+            integerAnsRef={integerAnsRef}
+            lowDecimalRef={lowDecimalRef}
+            highDecimalRef={highDecimalRef}
+            testId={testId}
+            questionStatus={questionStatus}
+            setQuestionStatus={setQuestionStatus}
+          />
+        </div>
+      </div>
 
-      {/* Render components */}
-      <TimeArea duration={testDetails.duration} />
-      <QuestionTextArea question={questions[currentQuestionIndex]} questionNumber={currentQuestionIndex + 1} />
-      <AnswerArea
-        question={questions[currentQuestionIndex]}
-        optionsRef={optionsRef}
-        integerAnsRef={integerAnsRef}
-        lowDecimalRef={lowDecimalRef}
-        highDecimalRef={highDecimalRef}
-      />
-      <ControlArea
-        setCurrentQuestionIndex={setCurrentQuestionIndex}
-        currentQuestionIndex={currentQuestionIndex}
-        questionsLength={questions.length}
-        username={userInfo.username}
-        questionId={questions[currentQuestionIndex]._id}
-        optionsRef={optionsRef}
-        integerAnsRef={integerAnsRef}
-        lowDecimalRef={lowDecimalRef}
-        highDecimalRef={highDecimalRef}
-        testId={testId}
-        questionStatus={questionStatus}
-        setQuestionStatus={setQuestionStatus}
-      />
-      <QuestionButtonArea
-        setCurrentQuestionIndex={setCurrentQuestionIndex}
-        questionsLength={questions.length}
-        currentQuestionIndex={currentQuestionIndex}
-        questionStatus={questionStatus}
-      />
-      <StatusArea questionStatus={questionStatus}/>
+      <div className="right-container">
+        <div className="up-part">
+          <TimeArea duration={testDetails.duration} />
+        </div>
+        <div className="middle-part">
+          <StatusArea questionStatus={questionStatus} />
+        </div>
+        <div className="down-part">
+          <QuestionButtonArea
+            setCurrentQuestionIndex={setCurrentQuestionIndex}
+            questionsLength={questions.length}
+            currentQuestionIndex={currentQuestionIndex}
+            questionStatus={questionStatus}
+          />
+        </div>
+      </div>
     </div>
   );
 };

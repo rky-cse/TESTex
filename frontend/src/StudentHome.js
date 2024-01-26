@@ -98,6 +98,7 @@ const TestDetails=useRef('');
       {/* Other content for the StudentHome page */}
 
       {/* Logout button */}
+      
       <button onClick={handleLogout}>Logout</button>
     </div>
   );

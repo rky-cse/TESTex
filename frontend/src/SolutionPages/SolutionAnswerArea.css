@@ -1,35 +1,55 @@
-/* Define your color classes */
-.normal {
-    background-color: #ffffff; /* default color */
-    color: #000000; /* default text color */
-  }
-  
-  .green {
-    background-color: #00ff00; /* green */
-    color: #000000; /* default text color */
-  }
-  
-  .red {
-    background-color: #ff0000; /* red */
-    color: #ffffff; /* white text for better visibility */
-  }
-  
-  .yellow {
-    background-color: #ffff00; /* yellow */
-    color: #000000; /* default text color */
-  }
-  
-  /* Style for each option box */
-  div {
-    padding: 5px;
-    margin: 5px;
-    border: 1px solid #000000; /* default border color */
-  }
-  
-  /* Style for the integerType and decimalType answer display */
-  .green {
-    color: #00ff00; /* green text color */
-  }
-  
-  /* Add more styling as needed */
-  
+/* SolutionAnswerArea.css */
+
+.option {
+  padding: 5px;
+  margin: 5px;
+  border: 1px solid #ccc;
+}
+
+.option.normal {
+  background-color: #fff; /* Normal background color */
+}
+
+.option.green {
+  background-color: #aafca2; /* Green background color */
+}
+
+.option.red {
+  background-color: #fcaaaa; /* Red background color */
+}
+
+.option.yellow {
+  background-color: #f8f8a9; /* Yellow background color */
+}
+
+.answer {
+  padding: 5px;
+  margin: 5px;
+  border: 1px solid #ccc;
+}
+
+.answer.green {
+  background-color: #aafca2; /* Green background color */
+}
+
+.answer.red {
+  background-color: #fcaaaa; /* Red background color */
+}
+
+.answer.normal {
+  background-color: #fff; /* Normal background color */
+}
+
+.range {
+  padding: 5px;
+  margin: 5px;
+  border: 1px solid #ccc;
+}
+
+.range.green {
+  background-color: #aafca2; /* Green background color */
+}
+
+.range.normal {
+  background-color: #fff; /* Normal background color */
+}

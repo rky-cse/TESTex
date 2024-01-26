@@ -31,37 +31,57 @@ export default function SolutionAnswerArea({ teacherQuestion, studentQuestion })
             {option.text}
           </div>
         );
-      });
-    } else if (teacherQuestion.questionType === 'integerType') {
-      const teacherAnswer = teacherQuestion.integerAns;
-      const studentAnswer = studentQuestion.integerAns;
-
-      const answerColor = teacherAnswer === studentAnswer ? 'green' : 'normal';
-
-      return (
-        <div className={`answer ${answerColor}`}>
-          Teacher Answer: {teacherAnswer}, Student Answer: {studentAnswer}
-        </div>
-      );
-    } else if (teacherQuestion.questionType === 'decimalType') {
-      const teacherLowDecimal = teacherQuestion.lowDecimal;
-      const teacherHighDecimal = teacherQuestion.highDecimal;
-
-      const studentLowDecimal = studentQuestion.lowDecimal;
-      const studentHighDecimal = studentQuestion.highDecimal;
-
-      const rangeColor =
-        teacherLowDecimal <= studentLowDecimal &&
-        studentHighDecimal <= teacherHighDecimal
-          ? 'green'
-          : 'normal';
-
-      return (
-        <div className={`range ${rangeColor}`}>
-          Teacher Range: {teacherLowDecimal} - {teacherHighDecimal}, Student Range: {studentLowDecimal} - {studentHighDecimal}
-        </div>
-      );
-    }
+      });}
+ 
+      else if (teacherQuestion.questionType === 'integerType') {
+        const teacherAnswer = teacherQuestion.integerAns;
+        const studentAnswer = studentQuestion.integerAns;
+      
+        const teacherColor = 'green';
+        const studentColor =
+          typeof studentAnswer !== 'undefined'
+            ? studentAnswer === teacherAnswer
+              ? 'green'
+              : 'red'
+            : 'normal';
+      
+        return (
+          <div>
+            <div className={`answer ${teacherColor}`}>
+              Teacher Answer: {teacherAnswer}
+            </div>
+            <div className={`answer ${studentColor}`}>
+              Student Answer: {typeof studentAnswer !== 'undefined' ? studentAnswer : 'Not answered'}
+            </div>
+          </div>
+        );
+      } else if (teacherQuestion.questionType === 'decimalType') {
+        const teacherLowDecimal = teacherQuestion.lowDecimal;
+        const teacherHighDecimal = teacherQuestion.highDecimal;
+      
+        const studentLowDecimal = studentQuestion.lowDecimal;
+        const studentHighDecimal = studentQuestion.highDecimal;
+      
+        const teacherColor = 'green';
+        const studentColor =
+          typeof studentLowDecimal !== 'undefined' && typeof studentHighDecimal !== 'undefined'
+            ? studentLowDecimal >= teacherLowDecimal && studentHighDecimal <= teacherHighDecimal
+              ? 'green'
+              : 'red'
+            : 'normal';
+      
+        return (
+          <div>
+            <div className={`range ${teacherColor}`}>
+              Teacher Range: {teacherLowDecimal} - {teacherHighDecimal}
+            </div>
+            <div className={`range ${studentColor}`}>
+              Student Range: {typeof studentLowDecimal !== 'undefined' ? studentLowDecimal : 'Not answered'} -{' '}
+              {typeof studentHighDecimal !== 'undefined' ? studentHighDecimal : 'Not answered'}
+            </div>
+          </div>
+        );
+      }
 
     return null;
   };
