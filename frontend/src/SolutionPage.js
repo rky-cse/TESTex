@@ -141,8 +141,8 @@ const SolutionPage = ({ username }) => {
     <div className="container">
       <div className="left-section">
         <h1>Solutions</h1>
-        <p>Test ID: {testId}</p>
-        <p>Username: {username}</p>
+      
+        <p>Candidate Username: {username}</p>
 
         {/* Display the current question in QuestionTextArea */}
         <SolutionQuestionTextArea question={questions[currentQuestionIndex]} questionNumber={currentQuestionIndex + 1} />
