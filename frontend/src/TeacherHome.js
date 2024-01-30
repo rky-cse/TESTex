@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link,useNavigate } from 'react-router-dom';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
 const TeacherHome = ({ userInfo }) => {
   const [tests, setTests] = useState([]);
   const [creatingMockTest, setCreatingMockTest] = useState(false);
-
+  const navigate=useNavigate();
   useEffect(() => {
     const fetchTests = async () => {
       try {
@@ -53,6 +54,13 @@ const TeacherHome = ({ userInfo }) => {
       console.error('Error deleting test:', error);
     }
   };
+  const handleEditTest = (testId) => {
+    // Perform the required actions when the Edit button is clicked
+    console.log(`Edit button clicked for testId: ${testId}`);
+    navigate(`/questions/${testId}`)
+    // You can navigate to an edit page or perform any other operations here
+    // For now, let's just log the testId to the console
+  };
 
   return (
     <div>
@@ -81,6 +89,16 @@ const TeacherHome = ({ userInfo }) => {
                   }}
                 >
                   <DeleteIcon />
+                </span>
+                <span
+                  onClick={() => handleEditTest(test._id)}
+                  style={{
+                    cursor: 'pointer',
+                    color: 'blue',
+                    marginLeft: '10px',
+                  }}
+                >
+                  <EditIcon />
                 </span>
               </li>
             ))}

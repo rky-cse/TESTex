@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { TextField, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-const IntegerTypeQuestionFormEdit = ({ onSave, testName, username,questionId, questionDetails }) => {
+const IntegerTypeQuestionFormEdit = ({ onSave, testId, username,questionId, questionDetails }) => {
   const [question, setQuestion] = useState(questionDetails.questionText);
   const [questionImage, setQuestionImage] = useState(null);
   const [answer, setAnswer] = useState(questionDetails.integerAns);
@@ -27,7 +27,7 @@ const IntegerTypeQuestionFormEdit = ({ onSave, testName, username,questionId, qu
     };
 
     try {
-      const response = await fetch(`http://localhost:8000/questions/${questionId}/${username}/${testName}`, {
+      const response = await fetch(`http://localhost:8000/questions/${questionId}/${username}/${testId}`, {
         method: 'PUT', // Use 'PATCH' if your server supports partial updates
         headers: {
           'Content-Type': 'application/json',
@@ -45,7 +45,7 @@ const IntegerTypeQuestionFormEdit = ({ onSave, testName, username,questionId, qu
       } else {
         console.error('Failed to edit question data:', result.message);
       }
-      navigate(`/questions/${testName}`);
+      navigate(`/questions/${testId}`);
     } catch (error) {
       console.error('Error sending question data:', error);
     }

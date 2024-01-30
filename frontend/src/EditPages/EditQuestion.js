@@ -6,14 +6,14 @@ import IntegerTypeQuestionFormEdit from './IntegerTypeQuestionFormEdit';
 import DecimalTypeQuestionFormEdit from './DecimalTypeQuestionFormEdit';
 
 const EditQuestion = ({ userInfo }) => {
-  const { testName, questionId } = useParams();
+  const { testId, questionId } = useParams();
   const [selectedQuestionType, setSelectedQuestionType] = useState('');
   const [questionDetails, setQuestionDetails] = useState(null);
   const username=userInfo.username
   useEffect(() => {
     const fetchQuestionDetails = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/get-question/${username}/${testName}/${questionId}`);
+        const response = await fetch(`http://localhost:8000/get-question/${username}/${testId}/${questionId}`);
         const data = await response.json();
 
         if (data.success) {
@@ -29,19 +29,19 @@ const EditQuestion = ({ userInfo }) => {
     };
 
     fetchQuestionDetails();
-  }, [username, testName, questionId]);
+  }, [username, testId, questionId]);
 
   // Render the selected question type form based on the value of selectedQuestionType
   const renderQuestionForm = () => {
     switch (selectedQuestionType) {
       case 'singleCorrect':
-        return <SingleCorrectQuestionFormEdit username={username} testName={testName} questionId={questionId} questionDetails={questionDetails} />;
+        return <SingleCorrectQuestionFormEdit username={username} testId={testId} questionId={questionId} questionDetails={questionDetails} />;
       case 'multipleCorrect':
-        return <MultipleCorrectQuestionFormEdit username={username} testName={testName} questionId={questionId} questionDetails={questionDetails} />;
+        return <MultipleCorrectQuestionFormEdit username={username} testId={testId} questionId={questionId} questionDetails={questionDetails} />;
       case 'integerType':
-        return <IntegerTypeQuestionFormEdit username={username} testName={testName} questionId={questionId} questionDetails={questionDetails} />;
+        return <IntegerTypeQuestionFormEdit username={username} testId={testId} questionId={questionId} questionDetails={questionDetails} />;
       case 'decimalType':
-        return <DecimalTypeQuestionFormEdit username={username} testName={testName} questionId={questionId} questionDetails={questionDetails} />;
+        return <DecimalTypeQuestionFormEdit username={username} testId={testId} questionId={questionId} questionDetails={questionDetails} />;
       default:
         return null;
     }

@@ -3,7 +3,7 @@ import { TextField, Button, Checkbox, FormControlLabel, IconButton } from '@mui/
 import { Delete } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
-const MultipleCorrectQuestionFormEdit = ({ onSave, testName, username,questionId, questionDetails }) => {
+const MultipleCorrectQuestionFormEdit = ({ onSave, testId, username,questionId, questionDetails }) => {
   const [question, setQuestion] = useState(questionDetails.questionText);
   const [questionImage, setQuestionImage] = useState(null);
   const [options, setOptions] = useState(questionDetails.options);
@@ -46,7 +46,7 @@ const MultipleCorrectQuestionFormEdit = ({ onSave, testName, username,questionId
     };
 
     try {
-      const response = await fetch(`http://localhost:8000/questions/${questionId}/${username}/${testName}`, {
+      const response = await fetch(`http://localhost:8000/questions/${questionId}/${username}/${testId}`, {
         method: 'PUT', // Use 'PATCH' if your server supports partial updates
         headers: {
           'Content-Type': 'application/json',
@@ -64,7 +64,7 @@ const MultipleCorrectQuestionFormEdit = ({ onSave, testName, username,questionId
       } else {
         console.error('Failed to edit question data:', result.message);
       }
-      navigate(`/questions/${testName}`);
+      navigate(`/questions/${testId}`);
     } catch (error) {
       console.error('Error sending question data:', error);
     }
@@ -144,4 +144,3 @@ const MultipleCorrectQuestionFormEdit = ({ onSave, testName, username,questionId
 };
 
 export default MultipleCorrectQuestionFormEdit
-

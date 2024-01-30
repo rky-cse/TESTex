@@ -139,9 +139,9 @@ const App = () => {
                 <Route path="/TeacherHome" element={<TeacherHome userInfo={userInfo} />} />
                 <Route path="/StudentHome" element={<StudentHome userInfo={userInfo} />} />
                 <Route path="/CreateMockTest" element={<CreateMockTest userInfo={userInfo} />} />
-                <Route path="/questions/:testName" element={<QuestionPage userInfo={userInfo} />} />
-                <Route path="/add-question/:testName" element={<AddQuestionPage userInfo={userInfo} />} />
-                <Route path="/edit-question/:testName/:questionId" element={<EditQuestion userInfo={userInfo} />} />
+                <Route path="/questions/:testId" element={<QuestionPage userInfo={userInfo} />} />
+                <Route path="/add-question/:testId" element={<AddQuestionPage userInfo={userInfo} />} />
+                <Route path="/edit-question/:testId/:questionId" element={<EditQuestion userInfo={userInfo} />} />
                 <Route path="/testpage/:testId" element={<TestPage userInfo={userInfo} />} />
                 <Route path="/result/:testId" element={<ResultPage username={userInfo.username} />} />
                 <Route path="/solutions/:testId/" element={<SolutionPage username={userInfo.username} />} />

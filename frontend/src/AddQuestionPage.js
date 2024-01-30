@@ -9,19 +9,19 @@ const AddQuestion = ({userInfo}) => {
   const [selectedQuestionType, setSelectedQuestionType] = useState('');
   const location = useLocation();
   const username=userInfo.username;
-  const testName=useParams();
+  const testId=useParams();
   
   // Render the selected question type form based on the value of selectedQuestionType
   const renderQuestionForm = () => {
     switch (selectedQuestionType) {
       case 'singleCorrect':
-        return <SingleCorrectQuestionForm username={username} testName={testName}/>;
+        return <SingleCorrectQuestionForm username={username} testId={testId}/>;
       case 'multipleCorrect':
-        return <MultipleCorrectQuestionForm username={username} testName={testName}/>;
+        return <MultipleCorrectQuestionForm username={username} testId={testId}/>;
       case 'integerType':
-        return <IntegerTypeQuestionForm username={username} testName={testName}/>;
+        return <IntegerTypeQuestionForm username={username} testId={testId}/>;
       case 'decimalType':
-        return <DecimalTypeQuestionForm username={username} testName={testName}/>;
+        return <DecimalTypeQuestionForm username={username} testId={testId}/>;
       default:
         return null;
     }

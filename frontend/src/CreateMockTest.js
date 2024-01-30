@@ -113,15 +113,19 @@ const CreateMockTest = ({ userInfo }) => {
       const data = await response.json();
 
       if (data) {
+        const testId=data.tests[data.tests.length-1]._id;
+        console.log(testId);
         console.log('Test added successfully:', data);
-        navigate(`/questions/${testName}`);
+        // navigate(`/questions/${testName}`);
+        navigate(`/questions/${testId}`);
+
       } else {
         console.error('Error adding test 1:', data.error);
       }
     } catch (error) {
       console.error('Error adding test 2:', error);
     }
-    navigate(`/questions/${testName}`);
+    // navigate(`/questions/${testName}`);
   };
 
   return (

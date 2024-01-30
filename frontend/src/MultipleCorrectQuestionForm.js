@@ -3,7 +3,7 @@ import { TextField, Button, Checkbox, FormControlLabel, IconButton } from '@mui/
 import { Delete } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
-const MultipleCorrectQuestionForm = ({ onSave, testName, username }) => {
+const MultipleCorrectQuestionForm = (props) => {
   const [question, setQuestion] = useState('');
   const [questionImage, setQuestionImage] = useState(null);
   const [options, setOptions] = useState([{ text: '', isCorrect: false, image: null }]);
@@ -52,11 +52,11 @@ const MultipleCorrectQuestionForm = ({ onSave, testName, username }) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          username,
+          username:props.username,
           role:'teacher',
           tests: [
             {
-              testName:testName.testName,
+              testId:props.testId.testId,
               questions: [questionData],
             },
           ],
@@ -71,7 +71,7 @@ const MultipleCorrectQuestionForm = ({ onSave, testName, username }) => {
       // } else {
       //   console.error('Failed to save question data:', result.message);
       // }
-      navigate(`/questions/${testName.testName}`);
+      navigate(`/questions/${props.testId.testId}`);
     } catch (error) {
       console.error('Error sending question data:', error);
     }

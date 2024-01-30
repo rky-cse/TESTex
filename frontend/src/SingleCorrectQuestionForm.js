@@ -3,7 +3,8 @@ import { TextField, Button, Radio, RadioGroup, FormControlLabel, IconButton } fr
 import { Delete } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
-const SingleCorrectQuestionForm = ({ onSave, testName, username }) => {
+const SingleCorrectQuestionForm = (props) => {
+  
   const [question, setQuestion] = useState('');
   const [questionImage, setQuestionImage] = useState(null);
   const [options, setOptions] = useState([{ text: '', isCorrect: false, image: null }]);
@@ -11,7 +12,7 @@ const SingleCorrectQuestionForm = ({ onSave, testName, username }) => {
   const [negativeMarks, setNegativeMarks] = useState(0);
 
   const navigate = useNavigate();
-
+  // console.log(testId.testId)
   const handleAddOption = () => {
     setOptions([...options, { text: '', isCorrect: false, image: null }]);
   };
@@ -54,17 +55,17 @@ const SingleCorrectQuestionForm = ({ onSave, testName, username }) => {
     };
 
     try {
-      const response = await fetch('http://localhost:8000/users-add-question', {
+      const response = await fetch(`http://localhost:8000/users-add-question`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          username,
+          username:props.username,
           role:'teacher',
           tests: [
             {
-              testName:testName.testName,
+              testId:props.testId.testId,
               questions: [questionData],
             },
           ],
@@ -79,7 +80,7 @@ const SingleCorrectQuestionForm = ({ onSave, testName, username }) => {
       // } else {
       //   console.error('Failed to save question data:', result.message);
       // }
-      navigate(`/questions/${testName.testName}`);
+      navigate(`/questions/${props.testId.testId}`);
     } catch (error) {
       console.error('Error sending question data:', error);
     }
