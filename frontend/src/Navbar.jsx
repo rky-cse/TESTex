@@ -7,6 +7,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isLogged = useSelector((state) => state.auth.isLogged);
+  const user = useSelector((state) => state.auth.user);
   const location = useLocation();
 
   const handleLogout = () => {
@@ -27,6 +28,10 @@ const Navbar = () => {
   const handleSignup = () => {
     navigate('/signup');
   };
+  const handleHome = () => {
+    user.role=='student'?navigate('/StudentHome'):navigate('/TeacherHome');
+    
+  };
 
   // Determine if current location is '/login' or '/signup'
   const isLoginPage = location.pathname === '/login';
@@ -36,6 +41,7 @@ const Navbar = () => {
     <div style={styles.navbar}>
       <div style={styles.logo}>TESTex</div>
       <div style={styles.navLinks}>
+        {isLogged && <button onClick={handleHome} style={styles.logoutButton}>Home</button>}
         {isLogged && <button onClick={handleLogout} style={styles.logoutButton}>Logout</button>}
         {!isLogged && !isLoginPage && <button onClick={handleLogin} style={styles.logoutButton}>Login</button>}
         {!isLogged && !isSignupPage && <button onClick={handleSignup} style={styles.logoutButton}>Signup</button>}

@@ -98,7 +98,7 @@ import SolutionControlArea from './SolutionPages/SolutionControlArea';
 import SolutionQuestionButtonArea from './SolutionPages/SolutionQuestionButtonArea';
 import SolutionTestFetch from './SolutionPages/SolutionTestFetch';
 
-const SolutionPage = ({ username }) => {
+const SolutionPage = () => {
   const user = useSelector((state) => state.auth.user);
   const { testId } = useParams();
   const [teacherQuestions, setTeacherQuestions] = useState([]);
@@ -127,7 +127,7 @@ const SolutionPage = ({ username }) => {
   if (!dataLoaded) {
     return (
       <SolutionTestFetch
-        username={username}
+        username={user.username}
         testId={testId}
         setDataLoaded={setDataLoaded}
         teacherTestRef={teacherTestRef}
@@ -143,7 +143,7 @@ const SolutionPage = ({ username }) => {
       <div className="left-section">
         <h1>Solutions</h1>
       
-        <p>Candidate Username: {username}</p>
+        <p>Candidate Username: {user.username}</p>
 
         {/* Display the current question in QuestionTextArea */}
         <SolutionQuestionTextArea question={questions[currentQuestionIndex]} questionNumber={currentQuestionIndex + 1} />

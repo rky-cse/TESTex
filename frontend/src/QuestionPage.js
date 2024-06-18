@@ -292,6 +292,9 @@ const QuestionPage = ({ userInfo }) => {
   const handleAddQuestionClick = () => {
     navigate(`/add-question/${testId}`);
   };
+  const handleHome = () => {
+    navigate(`/TeacherHome`);
+  };
   const handleInputChange = (field, value) => {
     setEditedTestInfo((prevInfo) => ({
       ...prevInfo,
@@ -335,8 +338,10 @@ const QuestionPage = ({ userInfo }) => {
       {isEditingTestInfo && (
         <button onClick={handleSaveTestInfo}>Save Changes</button>
       )}
-      <ul>{questions.map((question, index) => renderQuestion(question, index))}</ul>
       <button onClick={handleAddQuestionClick}>Add Question</button>
+      <button onClick={handleHome}>Save Test</button>
+      <ul>{questions.map((question, index) => renderQuestion(question, index))}</ul>
+      
     </div>
   );
 };

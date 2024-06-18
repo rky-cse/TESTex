@@ -2,9 +2,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useParams,useNavigate} from 'react-router-dom';
 import { useSelector } from 'react-redux';
-const ResultPage = ({ username }) => {
+const ResultPage = () => {
   const { testId } = useParams();
-  console.log(username);
   const teacherTestRef = useRef(null);
   const studentTestRef = useRef(null);
   const [studentScore, setStudentScore] = useState(null);
@@ -31,7 +30,7 @@ const ResultPage = ({ username }) => {
     const fetchStudentTest = async () => {
       try {
         console.log('Fetching data from the backend');
-        const response = await fetch(`http://localhost:8000/api/getTestDetails/${username}/${testId}`);
+        const response = await fetch(`http://localhost:8000/api/getTestDetails/${user.username}/${testId}`);
         const data = await response.json();
 
         console.log('Fetched data:', data);
@@ -52,7 +51,7 @@ const ResultPage = ({ username }) => {
     };
 
     fetchData();
-  }, [username, testId]);
+  }, [user, testId]);
 
   useEffect(() => {
     // Marks correction logic

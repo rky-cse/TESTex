@@ -98,6 +98,7 @@ import TestPage from './TestPage'
 import ResultPage from './ResultPage';
 import SolutionPage from './SolutionPage';
 import Navbar from './Navbar';
+import Leaderboard from './Leaderboard';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -175,6 +176,7 @@ const App = () => {
                 <Route exact path="/testpage/:testId" element={<TestPage userInfo={userInfo} />} />
                 <Route exact path="/result/:testId" element={<ResultPage username={userInfo.username} />} />
                 <Route exact path="/solutions/:testId/" element={<SolutionPage username={userInfo.username} />} />
+                {/* <Route exact path="/leaderboard/:testId" element={<Leaderboard />} /> */}
               </>
             )}
 

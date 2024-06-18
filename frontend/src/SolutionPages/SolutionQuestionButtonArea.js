@@ -3,8 +3,10 @@ import React from 'react';
 import './SolutionQuestionButtonArea.css';
 
 const QuestionButtonArea = ({ questionsLength, setCurrentQuestionIndex, currentQuestionIndex, questionStatus }) => {
-  const gridSize = Math.ceil(questionsLength / 5) * 5; // Calculate the nearest multiple of 5
-
+  let gridSize = Math.ceil(questionsLength / 5) * 5; // Calculate the nearest multiple of 5
+  if(gridSize>questionsLength){
+    gridSize=questionsLength
+  }
   const renderGridCells = () => {
     const gridCells = [];
     
