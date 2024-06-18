@@ -9,7 +9,7 @@ let questions = require('./data');
 const app = express();
 const port = 8000;
 const secretKey = 'yourSecretKey'; // Replace with a strong secret key
-
+const jwt =require('jsonwebtoken')
 app.use(cors());
 app.use(bodyParser.json());
 
@@ -70,27 +70,31 @@ const TestModel = mongoose.model('Test', testSchema);
 const QuestionModel = mongoose.model('Question', questionSchema);
 const OptionModel = mongoose.model('Option', optionSchema);
 
-// Express routes
+
 app.post('/signup', async (req, res) => {
-    const { username, password, role } = req.body;
-  
-    try {
-      const existingUser = await UserModel.findOne({ username });
-  
-      if (existingUser) {
-        return res.status(400).json({ message: 'Username already exists' });
-      }
-  
-      const hashedPassword = bcrypt.hashSync(password, 10);
-      const newUser = new UserModel({ username, password: hashedPassword, role });
-      await newUser.save();
-  
-      res.status(201).json({ message: 'User created successfully' });
-    } catch (error) {
-      console.error('Error during signup:', error.message);
-      res.status(500).json({ message: 'Error creating user' });
+  const { username, password, role } = req.body;
+
+  try {
+    const existingUser = await UserModel.findOne({ username });
+
+    if (existingUser) {
+      return res.status(400).json({ message: 'Username already exists' });
     }
-  });
+
+    const hashedPassword = bcrypt.hashSync(password, 10);
+    const newUser = new UserModel({ username, password: hashedPassword, role });
+    await newUser.save();
+
+    // Generate a JWT token
+    const token = jwt.sign({ id: newUser._id, role: newUser.role }, secretKey);
+
+    res.status(201).json({ message: 'User created successfully', token, user:newUser });
+  } catch (error) {
+    console.error('Error during signup:', error.message);
+    res.status(500).json({ message: 'Error creating user' });
+  }
+});
+  
   
   app.post('/login', async (req, res) => {
     const { username, password } = req.body;
@@ -101,7 +105,10 @@ app.post('/signup', async (req, res) => {
       console.log('User from database:', user);
   
       if (user && bcrypt.compareSync(password, user.password)) {
-        res.status(200).json({ message: 'Login successful', user });
+        // Generate a JWT token
+        const token = jwt.sign({ id: user._id, role: user.role }, secretKey);
+  
+        res.status(200).json({ message: 'Login successful', token,user });
       } else {
         res.status(401).json({ message: 'Invalid credentials' });
       }
@@ -111,6 +118,26 @@ app.post('/signup', async (req, res) => {
     }
   });
 
+  app.get('/getUserByjwt', async (req, res) => {
+    const token = req.header('Authorization')?.replace('Bearer ', '');
+  
+    if (!token) {
+      return res.status(401).json({ message: 'No token, authorization denied' });
+    }
+  
+    try {
+      const decoded = jwt.verify(token, secretKey);
+      const user = await UserModel.findById(decoded.id).select('-password');
+  
+      if (user) {
+        res.json(user);
+      } else {
+        res.status(404).json({ message: 'User not found' });
+      }
+    } catch (error) {
+      res.status(401).json({ message: 'Token is not valid' });
+    }
+  });
 
 app.post('/users-add-test', async (req, res) => {
     const { username, tests } = req.body;
@@ -134,48 +161,12 @@ app.post('/users-add-test', async (req, res) => {
         const newUser = await UserModel.create(req.body);
         res.status(201).json(newUser);
       }
-    } catch (error) {
-      res.status(500).json({ error: error.message });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
     }
   });
   
-//--
-// Express route for creating or updating user question array
-// app.post('/users-add-question', async (req, res) => {
-//   const { username, role, tests } = req.body;
 
-//   try {
-//     // Check if the user with the given username and role (teacher) already exists
-//     const existingUser = await UserModel.findOne({ username, role });
-
-//     if (existingUser) {
-//       // Teacher exists, find the corresponding test
-//       const existingTest = existingUser.tests.find(test => test.testName === tests[0].testName);
-
-//       if (existingTest) {
-//         // Test exists, update the existing test with new question details
-//         if (tests[0].questions && tests[0].questions.length > 0) {
-//           existingTest.questions.push(tests[0].questions[0]); // Assuming only one question is added at a time
-//           await existingUser.save();
-//         } else {
-//           return res.status(400).json({ error: 'No questions provided for update.' });
-//         }
-//       } else {
-//         // Test does not exist, add a new test with the provided questions
-//         existingUser.tests.push(tests[0]);
-//         await existingUser.save();
-//       }
-
-//       res.status(200).json(existingUser);
-//     } else {
-//       // Teacher does not exist, create a new user with a new test and questions
-//       const newUser = await UserModel.create(req.body);
-//       res.status(201).json(newUser);
-//     }
-//   } catch (error) {
-//     res.status(500).json({ error: error.message });
-//   }
-// });
 app.post('/users-add-question', async (req, res) => {
   const { username, role, tests } = req.body;
 
@@ -215,46 +206,6 @@ app.post('/users-add-question', async (req, res) => {
   }
 });
 
-
-
-
-// app.delete('/questions/:questionId/:username/:testName', async (req, res) => {
-//   const { questionId, username, testName } = req.params;
-//   console.log('Received request to delete question:', questionId);
-
-//   try {
-//     // Find the user by username
-//     const user = await UserModel.findOne({ username });
-
-//     if (!user) {
-//       return res.status(401).json({ success: false, error: 'User not found.' });
-//     }
-
-//     // Find the test by its name
-//     const test = user.tests.find(t => t.testName === testName);
-
-//     if (!test) {
-//       return res.status(402).json({ success: false, error: 'Test not found.' });
-//     }
-
-//     // Find the index of the question in the test's questions array
-//     const questionIndex = test.questions.findIndex(q => q._id.toString() === questionId);
-
-//     if (questionIndex === -1) {
-//       return res.status(403).json({ success: false, error: 'Question not found in the specified test.' });
-//     }
-
-//     // Remove the question from the test
-//     test.questions.splice(questionIndex, 1);
-
-//     // Save the updated user
-//     await user.save();
-
-//     res.status(200).json({ success: true, message: 'Question deleted successfully.' });
-//   } catch (error) {
-//     res.status(500).json({ success: false, error: error.message });
-//   }
-// });
 app.delete('/questions/:questionId/:username/:testId', async (req, res) => {
   const { questionId, username, testId } = req.params;
   console.log('Received request to delete question:', questionId);
@@ -305,33 +256,7 @@ app.get('/users', async (req, res) => {
   }
 });
 
-// Express route for getting questions by username and test name
-// app.get('/api/getQuestions/:username/:testName', async (req, res) => {
-//   try {
-//     const { username, testName } = req.params;
-//     console.log(username,testName);
 
-//     // Find the user by username
-//     const user = await UserModel.findOne({ username });
-
-//     if (!user) {
-//       return res.status(404).json({ success: false, message: 'User not found.' });
-//     }
-
-//     // Find the test by test name
-//     console.log(user);
-//     const test = user.tests.find(t => t.testName === testName);
-
-//     if (!test) {
-//       return res.status(404).json({ success: false, message: 'Test not found.' });
-//     }
-
-//     // Return the questions array
-//     res.status(200).json({ success: true, questions: test.questions });
-//   } catch (error) {
-//     res.status(500).json({ success: false, error: error.message });
-//   }
-// });
 app.get('/api/getQuestions/:username/:testId', async (req, res) => {
   try {
     const { username, testId } = req.params;
@@ -408,38 +333,6 @@ app.get('/api/getTests/:username', async (req, res) => {
   }
 });
 
-// app.get('/get-question/:username/:testName/:questionId', async (req, res) => {
-//   const { username, testName, questionId } = req.params;
-//   console.log(`Received request to fetch details for question ${questionId} in test ${testName} for user ${username}`);
-
-//   try {
-//     // Find the user by username
-//     const user = await UserModel.findOne({ username });
-
-//     if (!user) {
-//       return res.status(404).json({ success: false, error: 'User not found.' });
-//     }
-
-//     // Find the test by its name
-//     const test = user.tests.find(t => t.testName === testName);
-
-//     if (!test) {
-//       return res.status(404).json({ success: false, error: 'Test not found.' });
-//     }
-
-//     // Find the question by its ID
-//     const question = test.questions.find(q => q._id.toString() === questionId);
-
-//     if (!question) {
-//       return res.status(404).json({ success: false, error: 'Question not found.' });
-//     }
-
-//     // Return the details of the question
-//     res.status(200).json({ success: true, question });
-//   } catch (error) {
-//     res.status(500).json({ success: false, error: error.message });
-//   }
-// });
 app.get('/get-question/:username/:testId/:questionId', async (req, res) => {
   const { username, testId, questionId } = req.params;
   console.log(`Received request to fetch details for question ${questionId} in test ${testId} for user ${username}`);
@@ -473,43 +366,6 @@ app.get('/get-question/:username/:testId/:questionId', async (req, res) => {
   }
 });
 
-// app.put('/questions/:questionId/:username/:testName', async (req, res) => {
-//   const { questionId, username, testName } = req.params;
-//   const updatedQuestionData = req.body.question;
-
-//   try {
-//     // Find the user by username
-//     const user = await UserModel.findOne({ username });
-
-//     if (!user) {
-//       return res.status(401).json({ success: false, error: 'User not found.' });
-//     }
-
-//     // Find the test by its name
-//     const test = user.tests.find(t => t.testName === testName);
-
-//     if (!test) {
-//       return res.status(402).json({ success: false, error: 'Test not found.' });
-//     }
-
-//     // Find the question in the test's questions array
-//     const question = test.questions.find(q => q._id.toString() === questionId);
-
-//     if (!question) {
-//       return res.status(403).json({ success: false, error: 'Question not found in the specified test.' });
-//     }
-
-//     // Update the question details
-//     Object.assign(question, updatedQuestionData);
-
-//     // Save the updated user
-//     await user.save();
-
-//     res.status(200).json({ success: true, message: 'Question updated successfully.' });
-//   } catch (error) {
-//     res.status(500).json({ success: false, error: error.message });
-//   }
-// });
 app.put('/questions/:questionId/:username/:testId', async (req, res) => {
   const { questionId, username, testId } = req.params;
   const updatedQuestionData = req.body.question;

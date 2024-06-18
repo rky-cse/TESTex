@@ -147,15 +147,17 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const QuestionPage = ({ userInfo }) => {
+  const user = useSelector((state) => state.auth.user);
   const [questions, setQuestions] = useState([]);
   const [testInfo, setTestInfo] = useState({});
   const [editedTestInfo, setEditedTestInfo] = useState({});
   const navigate = useNavigate();
   const location = useLocation();
   const { state } = location;
-  const username = userInfo.username;
+  const username = user.username;
   const { testId } = useParams();
   const [isEditingTestInfo, setIsEditingTestInfo] = useState(false);
 

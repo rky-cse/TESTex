@@ -2,15 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { Link,useNavigate } from 'react-router-dom';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-
+import { useSelector } from 'react-redux';
 const TeacherHome = ({ userInfo }) => {
+  const user = useSelector((state) => state.auth.user);
   const [tests, setTests] = useState([]);
   const [creatingMockTest, setCreatingMockTest] = useState(false);
   const navigate=useNavigate();
   useEffect(() => {
     const fetchTests = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/api/getTests/${userInfo.username}`);
+        const response = await fetch(`http://localhost:8000/api/getTests/${user.username}`);
         const result = await response.json();
 
         if (result.success) {
@@ -24,7 +25,7 @@ const TeacherHome = ({ userInfo }) => {
     };
 
     fetchTests();
-  }, [userInfo.username]);
+  }, [user]);
 
   const handleLogout = () => {
     console.log('Logout button clicked');
@@ -38,7 +39,7 @@ const TeacherHome = ({ userInfo }) => {
 
   const handleDeleteTest = async (testName) => {
     try {
-      const deleteResponse = await fetch(`http://localhost:8000/delete-test/${userInfo.username}/${testName}`, {
+      const deleteResponse = await fetch(`http://localhost:8000/delete-test/${user.username}/${testName}`, {
         method: 'DELETE',
       });
 
@@ -64,7 +65,7 @@ const TeacherHome = ({ userInfo }) => {
 
   return (
     <div>
-      <h2>Welcome, {userInfo.username}!</h2>
+      <h2>Welcome, {user.username}!</h2>
       <p>Your role: Teacher</p>
 
       <Link to="/createMockTest">

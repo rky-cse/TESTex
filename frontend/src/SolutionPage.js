@@ -91,7 +91,7 @@
 import './SolutionPage.css';
 import React, { useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-
+import { useSelector } from 'react-redux';
 import SolutionQuestionTextArea from './SolutionPages/SolutionQuestionText';
 import SolutionAnswerArea from './SolutionPages/SolutionAnswerArea';
 import SolutionControlArea from './SolutionPages/SolutionControlArea';
@@ -99,6 +99,7 @@ import SolutionQuestionButtonArea from './SolutionPages/SolutionQuestionButtonAr
 import SolutionTestFetch from './SolutionPages/SolutionTestFetch';
 
 const SolutionPage = ({ username }) => {
+  const user = useSelector((state) => state.auth.user);
   const { testId } = useParams();
   const [teacherQuestions, setTeacherQuestions] = useState([]);
   const [studentQuestions, setStudentQuestions] = useState([]);

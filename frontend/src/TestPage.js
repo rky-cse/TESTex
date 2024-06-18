@@ -8,8 +8,9 @@ import QuestionButtonArea from './TestPageComponents/QuestionButtonArea';
 import StatusArea from './TestPageComponents/StatusArea';
 import TestFetch from './TestPageComponents/TestFetch';
 import './TestPage.css'
-
+import { useSelector } from 'react-redux';
 const TestPage = (props) => {
+  const user = useSelector((state) => state.auth.user);
   const { testId } = useParams();
   const { userInfo } = props;
   const [questions, setQuestions] = useState([]);
@@ -25,7 +26,7 @@ const TestPage = (props) => {
   if (!testDetails) {
     return (
       <TestFetch
-        userInfo={userInfo}
+        userInfo={user}
         testId={testId}
         setTestDetails={setTestDetails}
         setQuestions={setQuestions}
@@ -47,7 +48,7 @@ const TestPage = (props) => {
         <div className="up-part">
     
          <h1>Exam Name: {testDetails.testName}</h1>
-          <p>Candidate Username: {userInfo.username}</p>
+          <p>Candidate Username: {user.username}</p>
           <QuestionTextArea question={questions[currentQuestionIndex]} questionNumber={currentQuestionIndex + 1} />
         </div>
         <div className="middle-part">

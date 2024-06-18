@@ -1,7 +1,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { useParams,useNavigate} from 'react-router-dom';
-
+import { useSelector } from 'react-redux';
 const ResultPage = ({ username }) => {
   const { testId } = useParams();
   console.log(username);
@@ -11,7 +11,7 @@ const ResultPage = ({ username }) => {
   const [dataLoaded, setDataLoaded] = useState(false);
   
   const navigate = useNavigate(); // useNavigate hook for navigation
-
+  const user = useSelector((state) => state.auth.user);
   useEffect(() => {
     const fetchTeacherTest = async () => {
       try {

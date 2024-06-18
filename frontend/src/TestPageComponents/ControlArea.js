@@ -97,7 +97,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './ControlArea.css';
-
+import {useSelector}from 'react-redux'
 export default function ControlArea({
   setCurrentQuestionIndex,
   currentQuestionIndex,
@@ -113,7 +113,7 @@ export default function ControlArea({
   setQuestionStatus,
 }) {
   const navigate = useNavigate();
-
+  const user = useSelector((state) => state.auth.user);
   const handleNext = () => {
     setCurrentQuestionIndex((currentQuestionIndex) => Math.min(currentQuestionIndex + 1, questionsLength - 1));
   };

@@ -2,9 +2,9 @@
 import './StudentHome.css';
 import React, { useState ,useEffect,useRef} from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import { useSelector } from 'react-redux';
 const StudentHome = ({ userInfo }) => {
-
+  const user = useSelector((state) => state.auth.user);
 
 const TestDetails=useRef('');
   const [inputValue, setInputValue] = useState('');
@@ -28,7 +28,7 @@ const TestDetails=useRef('');
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          studentId: userInfo.username, // Replace with the actual student ID
+          studentId: user.username, // Replace with the actual student ID
           testDetails: testDetails,
         }),
       });
@@ -81,7 +81,7 @@ const TestDetails=useRef('');
 
   return (
     <div>
-      <h2>Welcome, {userInfo.username}!</h2>
+      <h2>Welcome, {user.username}!</h2>
       <p>Your role: Student</p>
 
       {/* Input field for joining */}

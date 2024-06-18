@@ -4,12 +4,13 @@ import SingleCorrectQuestionFormEdit from './SingleCorrectQuestionFormEdit';
 import MultipleCorrectQuestionFormEdit from './MultipleCorrectQuestionFormEdit';
 import IntegerTypeQuestionFormEdit from './IntegerTypeQuestionFormEdit';
 import DecimalTypeQuestionFormEdit from './DecimalTypeQuestionFormEdit';
-
+import { useSelector } from 'react-redux';
 const EditQuestion = ({ userInfo }) => {
+  const user = useSelector((state) => state.auth.user);
   const { testId, questionId } = useParams();
   const [selectedQuestionType, setSelectedQuestionType] = useState('');
   const [questionDetails, setQuestionDetails] = useState(null);
-  const username=userInfo.username
+  const username=user.username
   useEffect(() => {
     const fetchQuestionDetails = async () => {
       try {

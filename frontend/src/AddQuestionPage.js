@@ -4,11 +4,12 @@ import SingleCorrectQuestionForm from './SingleCorrectQuestionForm';
 import MultipleCorrectQuestionForm from './MultipleCorrectQuestionForm';
 import IntegerTypeQuestionForm from './IntegerTypeQuestionForm';
 import DecimalTypeQuestionForm from './DecimalTypeQuestionForm';
-
+import { useSelector } from 'react-redux';
 const AddQuestion = ({userInfo}) => {
+  const user = useSelector((state) => state.auth.user);
   const [selectedQuestionType, setSelectedQuestionType] = useState('');
   const location = useLocation();
-  const username=userInfo.username;
+  const username=user.username;
   const testId=useParams();
   
   // Render the selected question type form based on the value of selectedQuestionType

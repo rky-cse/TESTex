@@ -73,8 +73,9 @@
 import React, { useState } from 'react';
 import { TextField, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-
+import { useSelector } from 'react-redux';
 const CreateMockTest = ({ userInfo }) => {
+  const user = useSelector((state) => state.auth.user);
   const [testName, setTestName] = useState('');
   const [duration, setDuration] = useState('');
   const [isNextEnabled, setIsNextEnabled] = useState(false);
@@ -104,7 +105,7 @@ const CreateMockTest = ({ userInfo }) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          username: userInfo.username,
+          username: user.username,
           role:'teacher',
           tests: [{ testName, duration, questions: [] }], // Assuming questions array is initially empty
         }),
