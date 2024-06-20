@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Link,useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { useSelector } from 'react-redux';
-const TeacherHome = ({ userInfo }) => {
+
+const TeacherHome = () => {
   const user = useSelector((state) => state.auth.user);
   const [tests, setTests] = useState([]);
-  const [creatingMockTest, setCreatingMockTest] = useState(false);
-  const navigate=useNavigate();
+  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchTests = async () => {
       try {
@@ -27,16 +29,6 @@ const TeacherHome = ({ userInfo }) => {
     fetchTests();
   }, [user]);
 
-  const handleLogout = () => {
-    console.log('Logout button clicked');
-    localStorage.removeItem('token');
-    window.location.href = '/login';
-  };
-
-  const createMockTest = () => {
-    setCreatingMockTest(true);
-  };
-
   const handleDeleteTest = async (testName) => {
     try {
       const deleteResponse = await fetch(`http://localhost:8000/delete-test/${user.username}/${testName}`, {
@@ -55,12 +47,21 @@ const TeacherHome = ({ userInfo }) => {
       console.error('Error deleting test:', error);
     }
   };
+
   const handleEditTest = (testId) => {
     // Perform the required actions when the Edit button is clicked
     console.log(`Edit button clicked for testId: ${testId}`);
-    navigate(`/questions/${testId}`)
-    // You can navigate to an edit page or perform any other operations here
-    // For now, let's just log the testId to the console
+    navigate(`/questions/${testId}`);
+  };
+
+  const handleCopyTestId = (testId) => {
+    navigator.clipboard.writeText(testId)
+      .then(() => {
+        alert(`Test ID ${testId} copied to clipboard`);
+      })
+      .catch((error) => {
+        console.error('Failed to copy test ID:', error);
+      });
   };
 
   return (
@@ -72,14 +73,12 @@ const TeacherHome = ({ userInfo }) => {
         <button>Create Mock Test</button>
       </Link>
 
-      <button onClick={handleLogout}>Logout</button>
-
       {tests.length > 0 ? (
         <div>
           <h3>Your Tests:</h3>
           <ul>
             {tests.map((test) => (
-              <li key={test.testName} style={{ display: 'flex', alignItems: 'center' }}>
+              <li key={test._id} style={{ display: 'flex', alignItems: 'center' }}>
                 {test.testName}
                 <span
                   onClick={() => window.confirm('Are you sure you want to delete this test?') && handleDeleteTest(test.testName)}
@@ -100,6 +99,16 @@ const TeacherHome = ({ userInfo }) => {
                   }}
                 >
                   <EditIcon />
+                </span>
+                <span
+                  onClick={() => handleCopyTestId(test._id)}
+                  style={{
+                    cursor: 'pointer',
+                    color: 'green',
+                    marginLeft: '10px',
+                  }}
+                >
+                  <ContentCopyIcon />
                 </span>
               </li>
             ))}

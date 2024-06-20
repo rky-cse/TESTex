@@ -64,11 +64,28 @@ const userSchema = new mongoose.Schema({
   tests: [testSchema],
 });
 
+const groupSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true
+  },
+  teachers: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }],
+  students: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }],
+  tests: [testSchema]
+});
+
 // Models
 const UserModel = mongoose.model('User', userSchema);
 const TestModel = mongoose.model('Test', testSchema);
 const QuestionModel = mongoose.model('Question', questionSchema);
 const OptionModel = mongoose.model('Option', optionSchema);
+const Group = mongoose.model('Group', groupSchema);
 
 
 app.post('/signup', async (req, res) => {
@@ -591,8 +608,190 @@ app.put('/update-test-info/:username/:testId', async (req, res) => {
   }
 });
 
+app.post('/create-groups', async (req, res) => {
+  const { name, teacherId } = req.body;
 
+  try {
+    // Validate teacher
+    const teacher = await UserModel.findById(teacherId);
+    if (!teacher || teacher.role !== 'teacher') {
+      return res.status(400).json({ message: 'Invalid teacher ID' });
+    }
 
+    // Create the group
+    const group = new Group({
+      name,
+      teachers: [teacherId],
+      students: [],
+      tests: []
+    });
+
+    await group.save();
+    res.status(201).json(group);
+  } catch (error) {
+    console.error('Error creating group:', error.message);
+    res.status(500).json({ message: 'Error creating group' });
+  }
+});
+// Fetch all groups for a teacher
+app.get('/get-groups/teacher/:teacherId', async (req, res) => {
+  const { teacherId } = req.params;
+
+  try {
+    // Validate teacher
+    const teacher = await UserModel.findById(teacherId);
+    if (!teacher || teacher.role !== 'teacher') {
+      return res.status(400).json({ message: 'Invalid teacher ID' });
+    }
+
+    // Find all groups the teacher is part of
+    const groups = await Group.find({ teachers: teacherId }).populate('teachers').populate('students').populate('tests');
+
+    res.status(200).json(groups);
+  } catch (error) {
+    console.error('Error fetching groups:', error.message);
+    res.status(500).json({ message: 'Error fetching groups' });
+  }
+});
+// GET endpoint to fetch group details by groupId
+app.get('/groups/:groupId', async (req, res) => {
+  const { groupId } = req.params;
+
+  try {
+    // Fetch the group details by groupId
+    const group = await Group.findById(groupId)
+      .populate('teachers', 'username') // Populate teachers with username only
+      .populate('students', 'username') // Populate students with username only
+      .populate('tests', 'testName'); // Populate tests with testName only
+
+    if (!group) {
+      return res.status(404).json({ message: 'Group not found' });
+    }
+
+    res.status(200).json(group);
+  } catch (error) {
+    console.error('Error fetching group details:', error.message);
+    res.status(500).json({ message: 'Error fetching group details' });
+  }
+});
+// Route to get groups by student ID
+app.get('/get-groups/student/:studentId', async (req, res) => {
+  const { studentId } = req.params;
+
+  try {
+    // Validate student
+    const student = await UserModel.findById(studentId);
+    if (!student || student.role !== 'student') {
+      return res.status(400).json({ message: 'Invalid student ID' });
+    }
+
+    // Find all groups the student is part of
+    const groups = await Group.find({ students: studentId })
+      .populate('teachers')
+      .populate('students')
+      .populate('tests');
+
+    res.status(200).json(groups);
+  } catch (error) {
+    console.error('Error fetching groups:', error.message);
+    res.status(500).json({ message: 'Error fetching groups' });
+  }
+});
+app.post('/groups/join', async (req, res) => {
+  const { groupId, studentId } = req.body;
+
+  try {
+    // Validate student
+    const student = await UserModel.findById(studentId);
+    if (!student || student.role !== 'student') {
+      return res.status(400).json({ message: 'Invalid student ID' });
+    }
+
+    // Validate group
+    const group = await Group.findById(groupId);
+    if (!group) {
+      return res.status(400).json({ message: 'Invalid group ID' });
+    }
+
+    // Add student to the group if not already a member
+    if (!group.students.includes(studentId)) {
+      group.students.push(studentId);
+      await group.save();
+    }
+
+    res.status(200).json({ message: 'Joined group successfully', group });
+  } catch (error) {
+    console.error('Error joining group:', error.message);
+    res.status(500).json({ message: 'Error joining group' });
+  }
+});
+app.post('/groups/:groupId/add-test', async (req, res) => {
+  const { groupId } = req.params;
+  const { teacherId,testId } = req.body;
+
+  try {
+    const group = await Group.findById(groupId);
+    const teacher = await UserModel.findById(teacherId);
+
+    if (!group) {
+      return res.status(404).send('Group not found');
+    }
+
+    if (!teacher || teacher.role !== 'teacher') {
+      return res.status(404).send('Teacher not found');
+    }
+
+    const test = teacher.tests.find(test => test._id.toString() === testId);
+
+    if (!test) {
+      return res.status(404).send('Test not found in teacher\'s tests');
+    }
+
+    group.tests.push(test);
+    await group.save();
+
+    res.json(group);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Server Error');
+  }
+});
+// Get all tests created by a specific teacher
+app.get('/tests/teacher/:teacherId', async (req, res) => {
+  try {
+    const { teacherId } = req.params;
+    const teacher = await UserModel.findById(teacherId);
+
+    if (!teacher) {
+      return res.status(404).json({ message: 'Teacher not found' });
+    }
+
+    res.json(teacher.tests);
+  } catch (error) {
+    console.error('Error fetching teacher tests:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+app.post('/groups/:groupId/remove-test', async (req, res) => {
+  const { groupId } = req.params;
+  const { testId } = req.body;
+
+  try {
+    const group = await Group.findById(groupId);
+
+    if (!group) {
+      return res.status(404).send('Group not found');
+    }
+
+    group.tests = group.tests.filter(test => test._id.toString() !== testId);
+    await group.save();
+
+    res.json(group);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Server Error');
+  }
+});
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

@@ -32,6 +32,10 @@ const Navbar = () => {
     user.role=='student'?navigate('/StudentHome'):navigate('/TeacherHome');
     
   };
+  const handleGroups = () => {
+    if(user.role === 'teacher')navigate('/teacher/groups');
+    else if(user.role === 'student')navigate('/student/groups');
+  };
 
   // Determine if current location is '/login' or '/signup'
   const isLoginPage = location.pathname === '/login';
@@ -42,6 +46,8 @@ const Navbar = () => {
       <div style={styles.logo}>TESTex</div>
       <div style={styles.navLinks}>
         {isLogged && <button onClick={handleHome} style={styles.logoutButton}>Home</button>}
+        {isLogged && user.role === 'teacher' && <button onClick={handleGroups} style={styles.logoutButton}>Groups</button>}
+        {isLogged && user.role === 'student' && <button onClick={handleGroups} style={styles.logoutButton}>Groups</button>}
         {isLogged && <button onClick={handleLogout} style={styles.logoutButton}>Logout</button>}
         {!isLogged && !isLoginPage && <button onClick={handleLogin} style={styles.logoutButton}>Login</button>}
         {!isLogged && !isSignupPage && <button onClick={handleSignup} style={styles.logoutButton}>Signup</button>}

@@ -213,68 +213,70 @@
 
 // export default StudentHome;
 import './StudentHome.css';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import axios from 'axios';
 
 const StudentHome = () => {
   const user = useSelector((state) => state.auth.user);
-  const TestDetails = useRef('');
+  const TestDetails = useRef(null);
   const [inputValue, setInputValue] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    navigate('/login');
+  useEffect(() => {
+    if (!user) {
+      // Handle the case where user is not available
+      setErrorMessage('User not found. Please log in.');
+    }
+  }, [user]);
+
+  const fetchTestDetails = async (testId) => {
+    try {
+      const response = await axios.get(`http://localhost:8000/api/getTest/${testId}`);
+      if (response.data.success) {
+        TestDetails.current = response.data.test;
+        return response.data.test;
+      } else {
+        throw new Error(response.data.error || 'Failed to fetch test details');
+      }
+    } catch (error) {
+      console.error('Error fetching test details:', error);
+      throw error;
+    }
   };
 
   const addTestInStudent = async (testDetails) => {
     try {
-      const response = await fetch('http://localhost:8000/api/addTestInStudent', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          studentId: user.username,
-          testDetails: testDetails,
-        }),
+      const response = await axios.post('http://localhost:8000/api/addTestInStudent', {
+        studentId: user.username,
+        testDetails: testDetails,
       });
 
-      const data = await response.json();
-
-      if (data.success) {
+      if (response.data.success) {
         console.log('Student tests updated successfully');
       } else {
-        console.error('Failed to update student tests:', data.error);
+        throw new Error(response.data.error || 'Failed to update student tests');
       }
     } catch (error) {
       console.error('Error updating student tests:', error);
-    }
-  };
-
-  const fetchTestDetails = async () => {
-    try {
-      const response = await fetch(`http://localhost:8000/api/getTest/${inputValue}`);
-      const data = await response.json();
-
-      if (data.success) {
-        TestDetails.current = data.test;
-      } else {
-        console.error('Failed to fetch test details:', data.error);
-      }
-    } catch (error) {
-      console.error('Error fetching test details:', error);
+      throw error;
     }
   };
 
   const handleJoin = async () => {
-    if (inputValue.trim() !== '') {
-      await fetchTestDetails();
-      await addTestInStudent(TestDetails.current);
+    if (inputValue.trim() === '') {
+      setErrorMessage('Please enter a test ID');
+      return;
+    }
+
+    try {
+      const testDetails = await fetchTestDetails(inputValue);
+      await addTestInStudent(testDetails);
       navigate(`/testpage/${inputValue}`);
-    } else {
-      console.error('Please enter a test');
+    } catch (error) {
+      setErrorMessage(error.message);
     }
   };
 
@@ -282,18 +284,20 @@ const StudentHome = () => {
     navigate(`/result/${testId}`);
   };
 
-  const handleViewLeaderboard = (testId) => {
-    navigate(`/leaderboard/${testId}`);
-  };
-
   const handleViewSolution = (testId) => {
     navigate(`/solutions/${testId}`);
   };
+
+  if (!user) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div>
       <h2>Welcome, {user.username}!</h2>
       <p>Your role: Student</p>
+
+      {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
 
       <label>
         Join Test:
@@ -307,14 +311,18 @@ const StudentHome = () => {
 
       <h3>Your Tests:</h3>
       <ul>
-        {user.tests.map((test) => (
-          <li key={test._id}>
-            {test.testName}
-            <button onClick={() => handleViewResult(test._id)}>Your Score</button>
-            {/* <button onClick={() => handleViewLeaderboard(test._id)}>Leaderboard</button> */}
-            <button onClick={() => handleViewSolution(test._id)}>Solution</button>
-          </li>
-        ))}
+        {user.tests && user.tests.length > 0 ? (
+          user.tests.map((test) => (
+            <li key={test._id}>
+              {test.testName}
+              <button onClick={() => handleViewResult(test._id)}>Your Score</button>
+              {/* <button onClick={() => handleViewLeaderboard(test._id)}>Leaderboard</button> */}
+              <button onClick={() => handleViewSolution(test._id)}>Solution</button>
+            </li>
+          ))
+        ) : (
+          <p>No tests available</p>
+        )}
       </ul>
     </div>
   );

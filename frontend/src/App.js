@@ -98,8 +98,10 @@ import TestPage from './TestPage'
 import ResultPage from './ResultPage';
 import SolutionPage from './SolutionPage';
 import Navbar from './Navbar';
-import Leaderboard from './Leaderboard';
-
+import TeacherGroups from './TeacherGroups'
+import GroupDetailsPage from './GroupDetailsPage.jsx'
+import StudentGroups from './StudentGroups.jsx'
+import StudentGroupDetailsPage from './StudentGroupDetailsPage'
 const App = () => {
   const dispatch = useDispatch();
   const [userRole, setUserRole] = useState(null);
@@ -176,7 +178,10 @@ const App = () => {
                 <Route exact path="/testpage/:testId" element={<TestPage userInfo={userInfo} />} />
                 <Route exact path="/result/:testId" element={<ResultPage username={userInfo.username} />} />
                 <Route exact path="/solutions/:testId/" element={<SolutionPage username={userInfo.username} />} />
-                {/* <Route exact path="/leaderboard/:testId" element={<Leaderboard />} /> */}
+                <Route exact path="/teacher/groups" element={<TeacherGroups />} />
+                <Route exact path="/group-details/:groupId" element={<GroupDetailsPage />} />
+                <Route exact path="/student/groups" element={<StudentGroups/>} />
+                <Route path="/student/groups/:groupId" element={<StudentGroupDetailsPage/>} />
               </>
             )}
 
