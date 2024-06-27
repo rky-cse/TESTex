@@ -274,7 +274,8 @@ const StudentHome = () => {
     try {
       const testDetails = await fetchTestDetails(inputValue);
       await addTestInStudent(testDetails);
-      navigate(`/testpage/${inputValue}`);
+     // navigate(`/testpage/${inputValue}`);
+     navigate(`/testDetails/${inputValue}`);
     } catch (error) {
       setErrorMessage(error.message);
     }

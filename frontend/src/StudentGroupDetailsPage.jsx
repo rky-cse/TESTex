@@ -249,7 +249,9 @@ const StudentGroupDetailsPage = () => {
   const handleJoinTestClick = async (testId) => {
     await fetchTestDetails(testId);
     await addTestInStudent(TestDetails.current);
-    navigate(`/testpage/${testId}`);
+   // navigate(`/testpage/${testId}`);
+   navigate(`/testDetails/${testId}`);
+
   };
 
   if (!group) {

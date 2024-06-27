@@ -58,10 +58,14 @@ const ResultPage = () => {
     if (dataLoaded && teacherTestRef.current && studentTestRef.current) {
       let obtainedMarks = 0;
 
+      console.log(studentTestRef.current);
+      console.log(teacherTestRef.current);
+
       studentTestRef.current.questions.forEach((studentQuestion) => {
         const correspondingTeacherQuestion = teacherTestRef.current.questions.find(
           (teacherQuestion) => teacherQuestion._id === studentQuestion._id
         );
+        console.log(correspondingTeacherQuestion)
 
         if (correspondingTeacherQuestion) {
           // Correction logic for different question types
