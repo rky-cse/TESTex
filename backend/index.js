@@ -44,6 +44,11 @@ const questionSchema = new mongoose.Schema({
   integerAns: Number,
   lowDecimal: Number,
   highDecimal: Number,
+  visited:Boolean,
+  answered:Boolean,
+  markedForReview:Boolean,
+
+
 });
 
 // Test Schema
@@ -448,6 +453,9 @@ app.get('/api/getTest/:testId', async (req, res) => {
       question.lowDecimal=null
       question.highDecimal=null
       question.integerAns=null
+      question.visited=false;
+      question.answered=false;
+      question.markedForReview=false;
       
     });
 
@@ -517,7 +525,7 @@ app.get('/api/getTestDetails/:username/:testId', async (req, res) => {
 // Endpoint to update a question
 app.put('/api/updateQuestion/:username/:questionId', async (req, res) => {
   const { username, questionId } = req.params;
-  const { options, integerAns, lowDecimal, highDecimal } = req.body;
+  const { options, integerAns, lowDecimal, highDecimal ,answered,visited,markedForReview} = req.body;
 
   try {
     const student = await UserModel.findOne({ username });
@@ -534,6 +542,9 @@ app.put('/api/updateQuestion/:username/:questionId', async (req, res) => {
           question.integerAns = integerAns !== undefined ? integerAns : question.integerAns;
           question.lowDecimal = lowDecimal !== undefined ? lowDecimal : question.lowDecimal;
           question.highDecimal = highDecimal !== undefined ? highDecimal : question.highDecimal;
+          question.answered = answered !== undefined ? answered : question.answered;
+          question.visited = visited !== undefined ? visited : question.visited;
+          question.markedForReview = markedForReview !== undefined ? markedForReview : question.markedForReview;
 
           await student.save();
 

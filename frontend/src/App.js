@@ -95,7 +95,7 @@ import QuestionPage from './QuestionPage';
 import AddQuestionPage from './AddQuestionPage';
 import EditQuestion from './EditPages/EditQuestion';
 import TestPage from './TestPage'
-import TestPage1 from './TestPage1'
+
 import ResultPage from './ResultPage';
 import SolutionPage from './SolutionPage';
 import Navbar from './Navbar';
@@ -103,7 +103,7 @@ import TeacherGroups from './TeacherGroups'
 import GroupDetailsPage from './GroupDetailsPage.jsx'
 import StudentGroups from './StudentGroups.jsx'
 import StudentGroupDetailsPage from './StudentGroupDetailsPage'
-import TestDetails from './TestPageComponents/TestDetails.jsx';
+import TestDetails from './TestDetails.jsx';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -180,7 +180,7 @@ const App = () => {
                 <Route exact path="/add-question/:testId" element={<AddQuestionPage userInfo={userInfo} />} />
                 <Route exact path="/edit-question/:testId/:questionId" element={<EditQuestion userInfo={userInfo} />} />
                 <Route exact path="/testpage/:testId" element={<TestPage userInfo={userInfo} />} />
-                <Route exact path="/testpage1/:testId" element={<TestPage1 userInfo={userInfo} />} />
+               
                 <Route exact path="/testdetails/:testId" element={<TestDetails />} />
                 <Route exact path="/result/:testId" element={<ResultPage username={userInfo.username} />} />
                 <Route exact path="/solutions/:testId/" element={<SolutionPage username={userInfo.username} />} />

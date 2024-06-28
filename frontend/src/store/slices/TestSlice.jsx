@@ -73,11 +73,43 @@ const TestSlice = createSlice({
     setQuestionIndex(state, action) {
       state.currentIndex = action.payload;
     },
+    setVisited(state, action) {
+      const questionId = action.payload;
+      const question = state.test?.test?.questions?.find(q => q._id === questionId);
+      question.visited=true;
+      
+    },
+    setMarkedForReview(state, action) {
+      const questionId = action.payload;
+      const question = state.test?.test?.questions?.find(q => q._id === questionId);
+      question.markedForReview=!question.markedForReview;
+      
+    },
+    setAnswered(state, action) {
+      const questionId = action.payload;
+      const question = state.test?.test?.questions?.find(q => q._id === questionId);
+      question.visited=true;
+     let tct=0;
+      if (question) {
+        question.options.forEach(option => {
+          if (option.isCorrect==true) {
+            tct++;
+          }
+          
+        });
+      }
+      if(tct>0)question.answered=true;
+      else question.answered=false;
+
+      if(question.integerAns || question.highDecimal || question.lowDecimal)question.answered=true;
+      
+      
+    },
   
   },
 });
 
 // export const TestActions = TestSlice.actions;
-export const { setTest, selectOption, setQuestionIndex,selectOptions } = TestSlice.actions;
+export const { setTest, selectOption, setQuestionIndex,selectOptions,setAnswered,setMarkedForReview,setVisited } = TestSlice.actions;
 export const TestActions=TestSlice.actions;
 export { TestSlice };

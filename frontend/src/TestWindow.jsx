@@ -90,6 +90,8 @@ import { useSelector } from 'react-redux';
 import QuestionArea from './TestWindowComponents/QuestionArea';
 import AnswerArea from './TestWindowComponents/AnswerArea';
 import ControlArea from './TestWindowComponents/ControlArea';
+import QuestionStatusArea from './TestWindowComponents/QuestionStatusArea';
+import QuestionButtonArea from './TestWindowComponents/QuestionButtonArea';
 
 
 const TestWindow = () => {
@@ -131,7 +133,8 @@ const TestWindow = () => {
       <div style={styles.verticalDivider} />
       <div style={styles.rightPanel}>
         {/* Right panel content */}
-        <h2>Other Content</h2>
+        <QuestionStatusArea testId={testId}/>
+        <QuestionButtonArea testId={testId}/>
         <p>This is where additional content can go.</p>
       </div>
     </div>

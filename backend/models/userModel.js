@@ -23,6 +23,9 @@ const questionSchema = new mongoose.Schema({
   integerAns: Number,
   lowDecimal: Number,
   highDecimal: Number,
+  visited:Boolean,
+  MarkedForReview:Boolean,
+  Answerd:Boolean,
 });
 
 // Test Schema

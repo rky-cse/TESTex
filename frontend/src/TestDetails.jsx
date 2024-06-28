@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { TestActions } from '../store/slices/TestSlice';
-import TestWindow from '../TestWindow';
+import { TestActions } from './store/slices/TestSlice';
+import TestWindow from './TestWindow';
 
 const TestDetails = () => {
   const dispatch = useDispatch();

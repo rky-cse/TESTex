@@ -1,59 +1,33 @@
-// import React from 'react';
-// import { useDispatch } from 'react-redux';
-// import { setQuestionIndex } from '../store/slices/TestSlice';
-
-// const ControlArea = ({ questionId, currentIndex, questionsLength }) => {
-//   const dispatch = useDispatch();
-
-//   const handleNext = () => {
-//     if (currentIndex < questionsLength - 1) {
-//       const nextIndex = currentIndex + 1;
-//       dispatch(setQuestionIndex(nextIndex));
-//     }
-//   };
-
-//   const handlePrevious = () => {
-//     if (currentIndex > 0) {
-//       const previousIndex = currentIndex - 1;
-//       dispatch(setQuestionIndex(previousIndex));
-//     }
-//   };
-
-//   return (
-//     <div style={styles.controlArea}>
-//       <button onClick={handlePrevious} disabled={currentIndex === 0}>
-//         Previous
-//       </button>
-//       <button onClick={handleNext} disabled={currentIndex === questionsLength - 1}>
-//         Next
-//       </button>
-//     </div>
-//   );
-// };
-
-// const styles = {
-//   controlArea: {
-//     display: 'flex',
-//     justifyContent: 'space-between',
-//     alignItems: 'center',
-//     marginTop: '10px',
-//   },
-// };
-
-// export default ControlArea;
-
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setQuestionIndex } from '../store/slices/TestSlice';
+import { setAnswered, setMarkedForReview, setQuestionIndex, setVisited } from '../store/slices/TestSlice';
 
 const ControlArea = ({questionId,currentIndex, questionsLength,testId }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const  username  = useSelector(state => state.auth?.user?.username); //Assuming username is available in auth.user
   const question = useSelector(state => state.test?.test?.test?.questions?.find(q => q._id === questionId));
+  const answeredRef=useRef(question.answered);
+  const visitedRef=useRef(question.visited);
+  const markedForReviewRef=useRef(question.markedForReview);
   const handleNext = async () => {
+    visitedRef.current=true;
+    console.log("mai hun" ,question)
+    let tct=0;
+    question.options.forEach(option => {
+      if(option.isCorrect){tct++;}
+
+      
+    });
+    if(tct>0)answeredRef.current=true;
+    else answeredRef.current=false;
+    if(question.integerAns || question.highDecimal || question.lowDecimal)answeredRef.current=true;
+
+    console.log(answeredRef.current)
+    dispatch(setAnswered(questionId));
+    dispatch(setVisited(questionId));
     if (currentIndex < questionsLength - 1) {
       const nextIndex = currentIndex + 1;
       dispatch(setQuestionIndex(nextIndex));
@@ -62,6 +36,19 @@ const ControlArea = ({questionId,currentIndex, questionsLength,testId }) => {
   };
 
   const handlePrevious = async () => {
+    visitedRef.current=true;
+    let tct=0;
+    question.options.forEach(option => {
+      if(option.isCorrect){tct++;}
+
+      
+    });
+    if(tct>0)answeredRef.current=true;
+    else answeredRef.current=false;
+    if(question.integerAns || question.highDecimal || question.lowDecimal)answeredRef.current=true;
+
+    dispatch(setAnswered(questionId));
+    dispatch(setVisited(questionId));
     if (currentIndex > 0) {
       const previousIndex = currentIndex - 1;
       dispatch(setQuestionIndex(previousIndex));
@@ -83,6 +70,9 @@ const ControlArea = ({questionId,currentIndex, questionsLength,testId }) => {
           integerAns:question.integerAns,
           lowDecimal:question.lowDecimal,
           highDecimal:question.highDecimal,
+          answered:answeredRef.current,
+          visited:visitedRef.current,
+          markedForReview:markedForReviewRef.current,
 
 
         }),
@@ -102,6 +92,19 @@ const ControlArea = ({questionId,currentIndex, questionsLength,testId }) => {
     await updateQuestion(username,questionId); 
     navigate(`/result/${testId}`); // Navigate to ResultPage.jsx
   };
+  const handleMarkForReview=async()=>{
+    visitedRef.current=true;
+    question.options.forEach(option => {
+      if(option.isCorrect)answeredRef.current=true;
+      
+    });
+    dispatch(setAnswered(questionId));
+    dispatch(setVisited(questionId));
+
+    markedForReviewRef.current=!markedForReviewRef.current;
+    dispatch(setMarkedForReview(questionId));
+    await updateQuestion(username,questionId);
+  }
 
   return (
     <div style={styles.controlArea}>
@@ -110,6 +113,9 @@ const ControlArea = ({questionId,currentIndex, questionsLength,testId }) => {
       </button>
       <button onClick={handleNext} disabled={currentIndex === questionsLength - 1}>
         Next
+      </button>
+      <button onClick={handleMarkForReview} >
+        Mark for Review
       </button>
       <button onClick={handleEndTest} disabled={currentIndex !== questionsLength - 1}>
         End Test
