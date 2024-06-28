@@ -8,6 +8,7 @@ const ControlArea = ({questionId,currentIndex, questionsLength,testId }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const  username  = useSelector(state => state.auth?.user?.username); //Assuming username is available in auth.user
+  const  userId  = useSelector(state => state.auth?.user?._id); 
   const question = useSelector(state => state.test?.test?.test?.questions?.find(q => q._id === questionId));
   const answeredRef=useRef(question.answered);
   const visitedRef=useRef(question.visited);
@@ -88,8 +89,30 @@ const ControlArea = ({questionId,currentIndex, questionsLength,testId }) => {
       // Handle error scenarios, e.g., display error message
     }
   };
+  const updateEndTime = async () => {
+    try {
+      const response = await fetch(`http://localhost:8000/api/updateEndTime/${userId}/${testId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update endTime');
+      }
+
+      const data = await response.json();
+      
+    } catch (error) {
+      console.error('Error updating endTime:', error);
+      // Handle error scenario
+    }
+  };
+  
   const handleEndTest = async () => {
     await updateQuestion(username,questionId); 
+    await updateEndTime();
     navigate(`/result/${testId}`); // Navigate to ResultPage.jsx
   };
   const handleMarkForReview=async()=>{
@@ -134,3 +157,4 @@ const styles = {
 };
 
 export default ControlArea;
+

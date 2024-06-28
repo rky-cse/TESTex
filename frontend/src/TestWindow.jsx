@@ -92,6 +92,7 @@ import AnswerArea from './TestWindowComponents/AnswerArea';
 import ControlArea from './TestWindowComponents/ControlArea';
 import QuestionStatusArea from './TestWindowComponents/QuestionStatusArea';
 import QuestionButtonArea from './TestWindowComponents/QuestionButtonArea';
+import TimeArea from './TestWindowComponents/TimeArea';
 
 
 const TestWindow = () => {
@@ -133,7 +134,9 @@ const TestWindow = () => {
       <div style={styles.verticalDivider} />
       <div style={styles.rightPanel}>
         {/* Right panel content */}
-        <QuestionStatusArea testId={testId}/>
+        <TimeArea testId={testId}/>
+
+        <QuestionStatusArea testId={testId} questionId={currentQuestion._id}/>
         <QuestionButtonArea testId={testId}/>
         <p>This is where additional content can go.</p>
       </div>

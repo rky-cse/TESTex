@@ -54,7 +54,12 @@ const questionSchema = new mongoose.Schema({
 // Test Schema
 const testSchema = new mongoose.Schema({
   testName: String,
+  
   duration: Number,
+  startTime: Date,
+  endTime: Date,
+  numberOfAttempt:{type: Number,default: 0,},
+
   questions: [questionSchema],
 });
 
@@ -467,6 +472,8 @@ app.get('/api/getTest/:testId', async (req, res) => {
 });
 app.post('/api/addTestInStudent', async (req, res) => {
   const { studentId, testDetails } = req.body;
+  testDetails.startTime=Date.now();
+  testDetails.endTime=(testDetails.startTime+(testDetails.duration)*60000);
 
   try {
     // Find the student by their userId
@@ -803,6 +810,38 @@ app.post('/groups/:groupId/remove-test', async (req, res) => {
     res.status(500).send('Server Error');
   }
 });
+app.post('/api/updateEndTime/:userId/:testId', async (req, res) => {
+  const { userId, testId } = req.params;
+
+  try {
+    const user = await UserModel.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: `User with ID ${userId} not found` });
+    }
+
+    const test = user.tests.find(test => test._id.toString() === testId);
+
+    if (!test) {
+      return res.status(404).json({ error: `Test with ID ${testId} not found for this user` });
+    }
+
+    // Calculate current time as endTime
+    const endTime = new Date();
+
+    // Update endTime in the test object
+    test.endTime = endTime;
+
+    // Save updated user object
+    await user.save();
+
+    res.json({ message: 'endTime updated successfully', endTime });
+  } catch (error) {
+    console.error('Error updating endTime:', error);
+    res.status(500).json({ error: 'Server error, could not update endTime' });
+  }
+});
+
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
