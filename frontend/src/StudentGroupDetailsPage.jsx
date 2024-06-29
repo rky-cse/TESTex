@@ -366,7 +366,7 @@ const StudentGroupDetailsPage = () => {
         (test) => test.endTime && new Date(test.endTime).getTime() > Date.now()
       );
 
-      if (ongoingTest._id!=testId) {
+      if (ongoingTest && ongoingTest._id!=testId) {
         alert('Some other test is going on. End that first!');
         navigate(`/testDetails/${ongoingTest._id}`);
         return;

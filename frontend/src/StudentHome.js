@@ -265,6 +265,25 @@ const StudentHome = () => {
       throw error;
     }
   };
+  const fetchUserData = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No token found');
+      }
+      const response = await axios.get('http://localhost:8000/getUserByjwt', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      dispatch(authActions?.login({ user: response.data }));
+      return response.data;
+    } catch (error) {
+      console.log(error.message);
+      return null;
+    }
+  };
 
   const handleJoin = async () => {
     if (inputValue.trim() === '') {
@@ -273,18 +292,23 @@ const StudentHome = () => {
     }
 
     try {
-      if(user){
-        user.tests?.forEach(test=>{
-          if(test.endTime && (new Date(test.EndTime)).getTime()<Date.now()){
-            alert('some other test is going on end that first!')
-            navigate(`/testDetails/${test._id}`);
-            return;
-          }
+      const userData = await fetchUserData();
+
+      if (userData) {
+        const ongoingTest = userData.tests?.find(
+          (test) => test.endTime && new Date(test.endTime).getTime() > Date.now()
+        );
   
-        })
+        if (ongoingTest && ongoingTest._id!=testId) {
+          alert('Some other test is going on. End that first!');
+          navigate(`/testDetails/${ongoingTest._id}`);
+          return;
+        }
       }
+  
       const testDetails = await fetchTestDetails(inputValue);
       await addTestInStudent(testDetails);
+      await fetchUserData();
      // navigate(`/testpage/${inputValue}`);
      navigate(`/testDetails/${inputValue}`);
     } catch (error) {
