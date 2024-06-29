@@ -220,6 +220,7 @@ import axios from 'axios';
 
 const StudentHome = () => {
   const user = useSelector((state) => state.auth.user);
+  
   const TestDetails = useRef(null);
   const [inputValue, setInputValue] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -272,6 +273,16 @@ const StudentHome = () => {
     }
 
     try {
+      if(user){
+        user.tests?.forEach(test=>{
+          if(test.endTime && (new Date(test.EndTime)).getTime()<Date.now()){
+            alert('some other test is going on end that first!')
+            navigate(`/testDetails/${test._id}`);
+            return;
+          }
+  
+        })
+      }
       const testDetails = await fetchTestDetails(inputValue);
       await addTestInStudent(testDetails);
      // navigate(`/testpage/${inputValue}`);

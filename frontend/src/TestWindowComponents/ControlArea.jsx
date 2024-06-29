@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setAnswered, setMarkedForReview, setQuestionIndex, setVisited } from '../store/slices/TestSlice';
+import { setAnswered, setMarkedForReview, setQuestionIndex, setTest, setVisited } from '../store/slices/TestSlice';
 
 const ControlArea = ({questionId,currentIndex, questionsLength,testId }) => {
   const dispatch = useDispatch();
@@ -113,6 +113,7 @@ const ControlArea = ({questionId,currentIndex, questionsLength,testId }) => {
   const handleEndTest = async () => {
     await updateQuestion(username,questionId); 
     await updateEndTime();
+    dispatch(setTest(null));
     navigate(`/result/${testId}`); // Navigate to ResultPage.jsx
   };
   const handleMarkForReview=async()=>{

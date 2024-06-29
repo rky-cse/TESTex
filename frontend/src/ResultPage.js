@@ -58,8 +58,8 @@ const ResultPage = () => {
     if (dataLoaded && teacherTestRef.current && studentTestRef.current) {
       let obtainedMarks = 0;
 
-      console.log(studentTestRef.current);
-      console.log(teacherTestRef.current);
+      // console.log(studentTestRef.current);
+      // console.log(teacherTestRef.current);
 
       studentTestRef.current.questions.forEach((studentQuestion) => {
         const correspondingTeacherQuestion = teacherTestRef.current.questions.find(
@@ -140,8 +140,8 @@ const ResultPage = () => {
 
   const totalMarks = teacherTestRef.current?.questions.reduce((acc, q) => acc + q.positiveMark, 0) || 0;
 
-  console.log(studentTestRef.current);
-  console.log(teacherTestRef.current);
+  // console.log(studentTestRef.current);
+  // console.log(teacherTestRef.current);
 
   const handleViewSolutionsClick = () => {
     // Assuming you have a route like '/solutions/:testId'

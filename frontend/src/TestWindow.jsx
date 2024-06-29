@@ -95,9 +95,9 @@ import QuestionButtonArea from './TestWindowComponents/QuestionButtonArea';
 import TimeArea from './TestWindowComponents/TimeArea';
 
 
-const TestWindow = () => {
+const TestWindow = ({testId}) => {
   // Selecting questions array and currentIndex from Redux state
-  const testId=useSelector(state => state.test?.test.test._id);
+  //const testId=useSelector(state => state.test?.test.test._id);
   const questions = useSelector(state => state.test?.test.test.questions);
   const currentIndex = useSelector(state => state.test.currentIndex);
   console.log(currentIndex)

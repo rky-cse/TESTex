@@ -23,10 +23,11 @@ const TestDetails = () => {
 
    
         if(endTime<Date.now()){
-          dispatch(setTest(null));
+         // dispatch(setTest(null));
           navigate(`/result/${response.data.test._id}`);
-          return;
+         // return;
         }
+        else
           dispatch(TestActions.setTest(response.data));
         } else {
           console.error('Username is null or undefined.');
@@ -49,7 +50,7 @@ const TestDetails = () => {
   return (
     <div>
       {testDetails ? (
-      <TestWindow />
+      <TestWindow testId={testId}/>
       ) : (
         <div>Loading test details...</div>
       )}
