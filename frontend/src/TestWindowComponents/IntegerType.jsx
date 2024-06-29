@@ -21,7 +21,7 @@ const IntegerType = ({ questionId }) => {
 
   return (
     <div>
-      <h2>{question.questionText}</h2>
+      {/* <h2>{question.questionText}</h2> */}
       <input
         type="number"
         value={question.integerAns || ''}

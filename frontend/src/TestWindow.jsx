@@ -138,52 +138,65 @@ const TestWindow = ({testId}) => {
 
         <QuestionStatusArea testId={testId} questionId={currentQuestion._id}/>
         <QuestionButtonArea testId={testId}/>
-        <p>This is where additional content can go.</p>
+        
       </div>
     </div>
   );
 };
-
 const styles = {
   testWindow: {
     display: 'flex',
     flexDirection: 'row',
-    height: '100vh', // Ensure full viewport height
+    height: '90vh', // Ensure full viewport height
+    overflow: 'hidden', // Prevent TestWindow from being scrollable
   },
   leftPanel: {
     display: 'flex',
     flexDirection: 'column',
     width: '70%', // Adjust width as per your design
-    overflowY: 'auto', // Enable vertical scrolling
+    overflowY: 'auto', // Enable vertical scrolling for left panel content
     padding: '10px', // Add padding if needed
+    height: '100%', // Take full height of TestWindow
   },
   rightPanel: {
     width: '30%', // Adjust width as per your design
     padding: '20px',
     backgroundColor: '#fafafa', // Example background color
+    overflowY: 'auto', // Enable vertical scrolling for right panel content
+    height: '100%', // Take full height of TestWindow
   },
   verticalDivider: {
     width: '2px', // Divider width
     backgroundColor: '#ccc', // Divider color
   },
   questionArea: {
+    flex: '1 0 50%', // Take half of the available vertical space
     padding: '10px',
     marginBottom: '10px',
     backgroundColor: '#f0f0f0', // Example background color
     borderRadius: '4px', // Example border radius
+    overflowY: 'auto', // Enable vertical scrolling for questionArea content
+    maxHeight: '50%', // Limit height to 50% of leftPanel height
   },
   answerArea: {
+    flex: '1 0 75%', // Take 3/4 of the available vertical space
     padding: '10px',
     marginBottom: '10px',
     backgroundColor: '#f0f0f0', // Example background color
     borderRadius: '4px', // Example border radius
+    overflowY: 'auto', // Enable vertical scrolling for answerArea content
+    maxHeight: '25%', // Limit height to 75% of leftPanel height
   },
   controlArea: {
+    flex: '1 0 25%', // Take 1/4 of the available vertical space
     padding: '10px',
     marginBottom: '10px',
     backgroundColor: '#f0f0f0', // Example background color
     borderRadius: '4px', // Example border radius
+    overflowY: 'hidden', // Enable vertical scrolling for controlArea content
+    maxHeight: '10%', // Limit height to 25% of leftPanel height
   },
 };
+
 
 export default TestWindow;

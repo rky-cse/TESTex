@@ -26,7 +26,7 @@ const DecimalType = ({ questionId }) => {
 
   return (
     <div>
-      <h2>{question.questionText}</h2>
+      {/* <h2>{question.questionText}</h2> */}
       <label>Low Decimal:</label>
       <input
         type="number"

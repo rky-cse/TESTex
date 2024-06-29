@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom/dist/umd/react-router-dom.development';
-import { setTest } from '../store/slices/TestSlice';
+import { setQuestionIndex, setTest } from '../store/slices/TestSlice';
 
 
 
@@ -27,7 +27,8 @@ const TimeArea = ({ testId,questionId}) => {
   useEffect(() => {
     if (timeLeft <= 0) {
      handleEndTest();
-     dispatch(setTest(null))// to remove test from redux after end
+     dispatch(setTest(null));// to remove test from redux after end
+     dispatch(setQuestionIndex(0));
 
       return;
     }
@@ -35,6 +36,7 @@ const TimeArea = ({ testId,questionId}) => {
         console.log((new Date(test.endTime)).getTime())
         console.log(Date.now());
         dispatch(setTest(null));
+        dispatch(setQuestionIndex(0));
         navigate(`/result/${testId}`);
         return;
     }

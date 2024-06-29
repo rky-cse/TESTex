@@ -114,6 +114,7 @@ const ControlArea = ({questionId,currentIndex, questionsLength,testId }) => {
     await updateQuestion(username,questionId); 
     await updateEndTime();
     dispatch(setTest(null));
+    dispatch(setQuestionIndex(0));
     navigate(`/result/${testId}`); // Navigate to ResultPage.jsx
   };
   const handleMarkForReview=async()=>{
@@ -132,16 +133,16 @@ const ControlArea = ({questionId,currentIndex, questionsLength,testId }) => {
 
   return (
     <div style={styles.controlArea}>
-      <button onClick={handlePrevious} disabled={currentIndex === 0}>
+      <button onClick={handlePrevious} >
         Previous
       </button>
-      <button onClick={handleNext} disabled={currentIndex === questionsLength - 1}>
+      <button onClick={handleNext} >
         Next
       </button>
       <button onClick={handleMarkForReview} >
         Mark for Review
       </button>
-      <button onClick={handleEndTest} disabled={currentIndex !== questionsLength - 1}>
+      <button onClick={handleEndTest} >
         End Test
       </button>
     </div>

@@ -23,7 +23,7 @@ const SingleCorrectType = ({ questionId }) => {
 
   return (
     <div>
-      <h2>{question.questionText}</h2>
+      {/* <h2>{question.questionText}</h2> */}
       {question.options.map((option) => (
         <div key={option._id}>
           <label>
